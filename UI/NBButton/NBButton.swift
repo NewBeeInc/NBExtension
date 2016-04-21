@@ -21,7 +21,7 @@ import UIKit
 	case TopImageBottomTitle
 }
 
-class NBButton: UIButton {
+public class NBButton: UIButton {
 
 	// MARK: stored property
 
@@ -46,7 +46,7 @@ class NBButton: UIButton {
 		super.init(frame: frame)
 	}
 	
-	required init?(coder aDecoder: NSCoder) {
+	public required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 	}
 
@@ -55,7 +55,7 @@ class NBButton: UIButton {
 		self.layoutType = layoutType
 	}
 
-	override func layoutSubviews() {
+	public override func layoutSubviews() {
 		super.layoutSubviews()
 		// 1. cal image bounds
 		if let img = self.currentImage {
