@@ -6,7 +6,7 @@
 //  Copyright © 2015 com.sangebaba. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 // MARK: - String扩展, 索引访问/MD5加密/正则判断
 
