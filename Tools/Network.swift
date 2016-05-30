@@ -47,29 +47,11 @@ class Network: NSObject {
 				return
 			}
 
-			var params = parameters
-			if params == nil {
-				params = [String: AnyObject]()
-			}
-			params["key"]     = Cache.manager.loadSession()
-			params["user_id"] = Cache.manager.loadUser()?.user_id
-
 			let manager = AFHTTPRequestOperationManager()
-			manager.GET(URL, parameters: params, success: { (operation, jsonObject) -> Void in
-
+			manager.GET(URL, parameters: parameters, success: { (operation, jsonObject) -> Void in
 				log("SUCCESS: \(URL)")
 				success(response: operation.response, json: JSON(jsonObject))
-
 				}, failure: { (operation, error) -> Void in
-
-					if error != nil {
-						// 处理error
-						self.handleError(error!)
-					} else if operation != nil {
-						// 处理错误的状态码
-						self.handleAbnormalOperation(operation!)
-					}
-
 					failure()
 			})
 		}
@@ -91,31 +73,11 @@ class Network: NSObject {
 				failure(nil)
 				return
 			}
-
-			var params = parameters
-			if (URL as NSString).rangeOfString(Network.URL.VerifyCaptcha).location == NSNotFound {
-				if params == nil {
-					params = [String: AnyObject]()
-				}
-				params["key"]     = Cache.manager.loadSession()
-				params["user_id"] = Cache.manager.loadUser()?.user_id
-			}
-
 			let manager = AFHTTPRequestOperationManager()
-			manager.POST(URL, parameters: params, success: { (operation, jsonObject) -> Void in
+			manager.POST(URL, parameters: parameters, success: { (operation, jsonObject) -> Void in
 				log("SUCCESS: \(URL)")
 				success(response: operation.response, json: JSON(jsonObject))
-
 				}, failure: { (operation, error) -> Void in
-
-					if error != nil {
-						// 处理error
-						self.handleError(error!)
-					} else if operation != nil {
-						// 处理错误的状态码
-						self.handleAbnormalOperation(operation!)
-					}
-
 					failure(operation)
 			})
 		}
@@ -137,30 +99,11 @@ class Network: NSObject {
 				failure()
 				return
 			}
-
-			var params = parameters
-			if params == nil {
-				params = [String: AnyObject]()
-			}
-			params["key"]     = Cache.manager.loadSession()
-			params["user_id"] = Cache.manager.loadUser()?.user_id
-
 			let manager = AFHTTPRequestOperationManager()
-			manager.PUT(URL, parameters: params, success: { (operation, jsonObject) -> Void in
-
+			manager.PUT(URL, parameters: parameters, success: { (operation, jsonObject) -> Void in
 				log("SUCCESS: \(URL)")
 				success(response: operation.response, json: JSON(jsonObject))
-
 				}, failure: { (operation, error) -> Void in
-
-					if error != nil {
-						// 处理error
-						self.handleError(error!)
-					} else if operation != nil {
-						// 处理错误的状态码
-						self.handleAbnormalOperation(operation!)
-					}
-
 					failure()
 			})
 		}
@@ -199,7 +142,6 @@ class Network: NSObject {
 				let uploadTask = manager.uploadTaskWithStreamedRequest(request, progress: &progress) { (response, responseObject, error) -> Void in
 
 					if error != nil {
-						self.handleError(error!)
 						failure()
 					} else if response.isKindOfClass(NSHTTPURLResponse.self) {
 						let statusCode = (response as! NSHTTPURLResponse).statusCode
@@ -207,7 +149,6 @@ class Network: NSObject {
 							var json = JSON(responseObject)
 							success(json.dictionaryObject!)
 						} else {
-							self.handleAbnormalResponse(response as! NSHTTPURLResponse)
 						}
 					} else {
 						var json = JSON(responseObject)
