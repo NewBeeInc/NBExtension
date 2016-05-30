@@ -183,7 +183,7 @@ public extension UIView {
 		// 设置文本
 		badge.text = badgeValue
 		// 调整尺寸
-		badge.font                = FONT_CONTENT_SUB
+		badge.font                = UIFont.systemFontOfSize(12.0)
 		badge.sizeToFitWithTextSizeLimits(CGSIZE_MAX, andInsets: UIEdgeInsetsZero)
 		badge.width = max(badge.width, badge.height) // 宽度至少应该与高度一致, 保证字符串长度较短时, label以圆形的方式显示
 		// 设置各项属性
