@@ -69,10 +69,10 @@ class Network: NSObject {
 
 		// 检查网络
 		Network.manager.checkReachable { (reachable) in
-			if !reachable {
-				failure(nil)
-				return
-			}
+//			if !reachable {
+//				failure(nil)
+//				return
+//			}
 			let manager = AFHTTPRequestOperationManager()
 			manager.POST(URL, parameters: parameters, success: { (operation, jsonObject) -> Void in
 				log("SUCCESS: \(URL)")
