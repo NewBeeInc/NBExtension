@@ -42,10 +42,10 @@ class Network: NSObject {
 
 		// 检查网络
 		Network.manager.checkReachable { (reachable) in
-			if !reachable {
-				failure()
-				return
-			}
+//			if !reachable {
+//				failure()
+//				return
+//			}
 
 			let manager = AFHTTPRequestOperationManager()
 			manager.GET(URL, parameters: parameters, success: { (operation, jsonObject) -> Void in
