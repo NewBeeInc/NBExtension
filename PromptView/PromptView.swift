@@ -41,7 +41,7 @@ class PromptView: FocusView {
 	}
 	@IBOutlet weak var promptLabel: UILabel! {
 		didSet {
-			promptLabel.font = FONT_CONTENT
+			promptLabel.font = UIFont.systemFontOfSize(13.5)
 			promptLabel.textColor = UIColor.ultraLightGrayColor()
 		}
 	}
