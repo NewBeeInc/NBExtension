@@ -31,9 +31,21 @@ public class NBButton: UIButton {
 	private var imgF = CGRectZero
 	/// layout type
 	public var layoutType = LayoutType.Normal {
+		didSet { self.setNeedsLayout() }
+	}
+	/// border line width
+	public var borderWidth = 0.0 {
 		didSet {
-			self.setNeedsLayout()
+			self.setNeedsDisplay()
 		}
+	}
+	/// border line color
+	public var borderColor = UIColor.blackColor() {
+		didSet { self.setNeedsDisplay() }
+	}
+	/// fill color
+	public var fillColor = UIColor.clearColor() {
+		didSet { self.setNeedsDisplay() }
 	}
 
 	// w = 88, h = 30
@@ -94,7 +106,7 @@ public class NBButton: UIButton {
 			let newImgF = CGRectMake(imgX, imgY, imgW, imgH)
 			self.titleLabel?.frame = newTtlF
 			self.imageView?.frame = newImgF
-			print("\noverall frame = \(frame)\ntitle frame = \(ttlF)\nimage frame = \(imgF)\ndefault title margin H = \(hTtlMrgDef)\ndefault title margi V = \(vTtlMrgDef)\ntitle frame = \(newTtlF)")
+//			print("\noverall frame = \(frame)\ntitle frame = \(ttlF)\nimage frame = \(imgF)\ndefault title margin H = \(hTtlMrgDef)\ndefault title margi V = \(vTtlMrgDef)\ntitle frame = \(newTtlF)")
 			break
 		// 3.2
 		case .TopImageBottomTitle:
@@ -154,4 +166,32 @@ public class NBButton: UIButton {
 // MARK: -
 extension NBButton {
 
+	public override func drawRect(rect: CGRect) {
+		super.drawRect(rect)
+		if borderWidth > 0 {
+			log("\(self.layer.cornerRadius)")
+			// 1. draw border
+			// 1.1 cal rect for border path
+			let bW = rect.width - borderWidth.cgFloat
+			let bH = rect.height - borderWidth.cgFloat
+			let bCR = max(self.layer.cornerRadius - borderWidth.cgFloat * 0.5, 0.0)
+			let bX = borderWidth.cgFloat * 0.5
+			let bY = bX
+			let borderP = UIBezierPath(roundedRect: CGRectMake(bX, bY, bW, bH), cornerRadius: bCR)
+			borderP.lineWidth = borderWidth.cgFloat
+			borderColor.setStroke()
+			borderP.addClip()
+			borderP.stroke()
+			// 2. fill within border
+			let fW = bW - borderWidth.cgFloat
+			let fH = bH - borderWidth.cgFloat
+			let fX = borderWidth.cgFloat
+			let fY = fX
+			let fCR = max(self.layer.cornerRadius - borderWidth.cgFloat, 0.0)
+			let fP = UIBezierPath(roundedRect: CGRectMake(fX, fY, fW, fH), cornerRadius: fCR)
+			self.backgroundColor = UIColor.clearColor()
+			fillColor.setFill()
+			fP.fill()
+		}
+	}
 }
