@@ -38,3 +38,34 @@ btn.borderWidth = 2.0
 btn.borderColor = UIColor(R: 239.0, G: 219.0, B: 107.0)
 btn.fillColor = UIColor(R: 255.0, G: 233.0, B: 122.0)
 ```
+
+## 3. MJExtension使用说明
+### 在swift bridging head中导入头文件:
+```swift
+#import "MJExtension.h"
+```
+
+ Model类:
+ 
+ .h -> 文件无需任何处理
+ 
+ .m -> 文件
+ 引入 #import "MJExtension.h"
+ 遵循 <NSCodeing> 协议
+ 引用 MJCodingImplementation
+
+```swift
+#import "XXX.h"
+#import "MJExtension.h"
+
+@interface XXX()<NSCoding>
+
+@end
+
+@implementation UserModel
+
+MJCodingImplementation
+
+@end
+
+```
