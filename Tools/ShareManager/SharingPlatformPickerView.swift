@@ -125,9 +125,9 @@ class SharingPlatformPickerView: FocusView {
 		button.setTitle(title, forState: .Normal)
 		button.layoutType = .TopImageBottomTitle
 		button.setTitleColor(UIColor.lightGrayColor(), forState: .Normal)
-		button.titleLabel?.font = FONT_CONTENT_SUB
+		button.titleLabel?.font = UIFont.systemFontOfSize(16.0)
 		button.titleEdgeInsets = UIEdgeInsetsMake(5.0, 0.0, 0.0, 0.0)
-		button.addTarget(self, action: #selector(NoInstrumentPromptView.didClickButton(_:)), forControlEvents: .TouchUpInside)
+//		button.addTarget(self, action: #selector(NoInstrumentPromptView.didClickButton(_:)), forControlEvents: .TouchUpInside)
 		self.containerView.addSubview(button)
 	}
 }
