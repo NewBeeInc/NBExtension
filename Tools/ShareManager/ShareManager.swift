@@ -20,6 +20,9 @@ public class ShareManager: NSObject {
 		}
 		return Static.instance
 	}
+
+	var supportsWechat = false
+	var supportsWeibo = false
 }
 
 // MARK: - 开放方法
@@ -118,7 +121,7 @@ public extension ShareManager {
 	- parameter icon:  图标
 	- parameter image: 图片
 	*/
-	public func sharingToWeibo(url: String?, title: String?, icon: UIImage?, image: UIImage?) {
+	/*public func sharingToWeibo(url: String?, title: String?, icon: UIImage?, image: UIImage?) {
 		let messageObject = WBMessageObject.message() as! WBMessageObject
 		messageObject.text = ((title == nil) ? "" : title!) + ((url == nil) ? "" : url!)
 		if let image = image {
@@ -129,7 +132,7 @@ public extension ShareManager {
 		}
 		let request = WBSendMessageToWeiboRequest.requestWithMessage(messageObject) as! WBSendMessageToWeiboRequest
 		WeiboSDK.sendRequest(request)
-	}
+	}*/
 
 }
 
@@ -148,7 +151,7 @@ extension ShareManager {
 
 	- returns: 返回拼接完成的图片
 	*/
-	public class func pieceTogetherSharingPicture(image: UIImage?, qrcodeText: String?, luckyMoneyAmount amount: Double?, pm25 value: Int?, siteInfo: String?) -> UIImage? {
+	/*public class func pieceTogetherSharingPicture(image: UIImage?, qrcodeText: String?, luckyMoneyAmount amount: Double?, pm25 value: Int?, siteInfo: String?) -> UIImage? {
 		guard let img = image else {
 			return nil
 		}
@@ -201,7 +204,7 @@ extension ShareManager {
 		containerView.removeFromSuperview()
 
 		return snapShot
-	}
+	}*/
 
 	/**
 	拼接文章长图+二维码图片
@@ -211,7 +214,7 @@ extension ShareManager {
 
 	- returns: 拼接
 	*/
-	public class func pieceTogetherArticleImage(image: UIImage, qrcodeText: String?) -> UIImage? {		// 0.35
+	/*public class func pieceTogetherArticleImage(image: UIImage, qrcodeText: String?) -> UIImage? {		// 0.35
 		// 0. 设置相框
 		let width         = image.size.width
 		let height        = image.size.height + width * 0.35
@@ -244,7 +247,7 @@ extension ShareManager {
 		containerView.removeFromSuperview()
 
 		return snapShot
-	}
+	}*/
 
 }
 
