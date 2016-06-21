@@ -1,5 +1,6 @@
 #import <CommonCrypto/CommonDigest.h>
 #import <SystemConfiguration/CaptiveNetwork.h>
+#import <sys/utsname.h>
 #import "AFNetworking.h"
 #import "MJExtension.h"
 #import "MBProgressHUD+MJ.h"
