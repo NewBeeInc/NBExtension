@@ -6,3 +6,4 @@
 #import "MBProgressHUD+MJ.h"
 #import "WXApi.h"
 #import "WXApiObject.h"
+#import "ZBarSDK.h"
