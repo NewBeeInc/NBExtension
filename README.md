@@ -1,5 +1,23 @@
 # NBFramework
 
+## 0. 准备工作
+
+使用NBF框架之前, 需要对项目作一些配置:
+
+**a**. `TARGETS`>`General`>`Linked Frameworks and Libraries`中添加以下框架:
+
+* SystemConfiguration.framework
+* Security.framework
+* CoreTelephony.framework
+* AVFoundation.framework
+* CoreMedia.framework
+* CoreVideo.framework
+* QuartzCore.framework
+* libz.tbd
+* libc++.tbd
+* libsqlite3.0.tbd
+* libiconv.tbd
+
 ## 1. 二维码/条形码扫描框架libzbar使用说明
 
 #### 在swift bridging head中导入头文件:
@@ -8,7 +26,7 @@
 #import "ZBarSDK.h"
 ```
 
-#### 添加依赖库
+#### 添加依赖库(***如已执行准备工作, 跳过此步***)
 
 * QuartzCore
 * CoreVideo
