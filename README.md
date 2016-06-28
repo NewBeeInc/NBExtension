@@ -5,7 +5,7 @@
 目前推荐使用`git submodule`来安装NBF框架:
 
 ```sh
-$ git submodule add git@github.com:NewBeeInc/NBFramework.git </relative/path/to/submodules/>
+$ git submodule add https://github.com/NewBeeInc/NBFramework.git </relative/path/to/submodules/>
 ```
 
 ## 项目配置
