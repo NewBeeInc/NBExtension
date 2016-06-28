@@ -8,6 +8,8 @@
 $ git submodule add https://github.com/NewBeeInc/NBFramework.git </relative/path/to/submodules/>
 ```
 
+clone结束后, 在Xcode中添加NBF的文件夹, 然后进行以下配置.
+
 ## 项目配置
 
 #### 1. 添加依赖框架
