@@ -53,4 +53,21 @@ public class NBQRCodeScanViewController: ZBarReaderViewController {
 			break
 		}
 	}
+
+	public class func extractResult(info: [String : AnyObject]) -> String? {
+		guard let results = info[ZBarReaderControllerResults] as? ZBarSymbolSet
+			else { return nil }
+		var symbolFound : ZBarSymbol?
+		for symbol in results {
+			symbolFound = symbol as? ZBarSymbol
+			break
+		}
+		return symbolFound?.data
+	}
+}
+
+extension ZBarSymbolSet: SequenceType {
+	public func generate() -> NSFastGenerator {
+		return NSFastGenerator(self)
+	}
 }
