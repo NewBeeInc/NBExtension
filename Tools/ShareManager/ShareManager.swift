@@ -25,6 +25,18 @@ public class ShareManager: NSObject {
 	var supportsWeibo = false
 }
 
+public extension ShareManager {
+
+	/**
+	设置WeChatSDK的App ID
+
+	- parameter id: App ID字符串
+	*/
+	public func regWeChatAppId(id: String) {
+		WXApi.registerApp(id)
+	}
+}
+
 // MARK: - 开放方法
 
 public extension ShareManager {
