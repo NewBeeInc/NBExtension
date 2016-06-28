@@ -1,10 +1,17 @@
 # NBFramework
 
-## 0. 准备工作
+## 安装方法
 
-使用NBF框架之前, 需要对项目作一些配置:
+目前推荐使用`git submodule`来安装NBF框架:
 
-**a**. `TARGETS`>`General`>`Linked Frameworks and Libraries`中添加以下框架:
+```sh
+$ git submodule add git@github.com:NewBeeInc/NBFramework.git </relative/path/to/submodules/>
+```
+
+## 项目配置
+
+#### 1. 添加依赖框架
+`TARGETS`>`General`>`Linked Frameworks and Libraries`中添加以下框架:
 
 * SystemConfiguration.framework
 * Security.framework
@@ -18,7 +25,10 @@
 * libsqlite3.0.tbd
 * libiconv.tbd
 
-## 1. 二维码/条形码扫描框架libzbar使用说明
+#### 2. 设置OC/Swift桥接头文件
+创建OC/Swift桥接头文件, 在`TARGETS`>`Build Settings`>`Objective-C Bridging Header`中设置该文件完整的相对路径, 然后将NBF中`swift-oc-bridging-header.h`文件中的全部代码拷贝至新创建的桥接头文件中, 即可.
+
+## 二维码/条形码扫描框架libzbar使用说明
 
 #### 在swift bridging head中导入头文件:
 
