@@ -117,4 +117,8 @@ class ZBarPickerOverlayView: UIView {
 			}
 		}
 	}
+
+	func stopScanAnim() {
+		self.timer = nil
+	}
 }
