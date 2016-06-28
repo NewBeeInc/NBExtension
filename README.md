@@ -30,6 +30,9 @@ clone结束后, 在Xcode中添加NBF的文件夹, 然后进行以下配置.
 #### 2. 设置OC/Swift桥接头文件
 创建OC/Swift桥接头文件, 在`TARGETS`>`Build Settings`>`Objective-C Bridging Header`中设置该文件完整的相对路径, 然后将NBF中`swift-oc-bridging-header.h`文件中的全部代码拷贝至新创建的桥接头文件中, 即可.
 
+#### 3. 关闭Bitcode
+由于Zbar静态库较老, 不支持Bitcode, 需要进行关闭: `TARGETS`>`Build Settings`>`Enable Bitcode`>`No`
+
 ## 二维码/条形码扫描框架libzbar使用说明
 
 #### 在swift bridging head中导入头文件:
