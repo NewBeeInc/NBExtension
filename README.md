@@ -127,3 +127,7 @@ let model = ModelA(keyValues: dict)
 ## WeChatSDK - 接入指南
 
 [iOS接入指南](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=1417694084&token=&lang=zh_CN)
+
+## WeiboSDK - 接入指南
+
+[iOS接入指南](https://github.com/sinaweibosdk/weibo_ios_sdk)
