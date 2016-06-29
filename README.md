@@ -123,3 +123,7 @@ let model = ModelA(keyValues: dict)
 ## Cocoa扩展 - Extension使用说明
 
 内容较多, [请点击](./Extension)
+
+## WeChatSDK - 接入指南
+
+[iOS接入指南](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=1417694084&token=&lang=zh_CN)
