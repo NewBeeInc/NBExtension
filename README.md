@@ -79,6 +79,7 @@ let btn = NBButton(type: .System)
 btn.layoutType = .TopImageBottomTitle
 ```
 #### 2. 自定义边框
+
 除了布局, NBButton也支持快速设置边框和填充色:
 
 ```swift
@@ -88,6 +89,10 @@ btn.borderWidth = 2.0
 btn.borderColor = UIColor(R: 239.0, G: 219.0, B: 107.0)
 btn.fillColor = UIColor(R: 255.0, G: 233.0, B: 122.0)
 ```
+
+#### 3. 设置帧动画
+
+NBButton支持帧动画播放, 具体参数和方法与`UIImageView`完全相同.
 
 ## 快速模型类创建 - MJExtension使用说明
 
