@@ -131,3 +131,7 @@ let model = ModelA(keyValues: dict)
 ## WeiboSDK - 接入指南
 
 [iOS接入指南](https://github.com/sinaweibosdk/weibo_ios_sdk)
+
+## TencentQQSDK - 接入指南
+
+[iOS接入指南](http://wiki.open.qq.com/wiki/IOS_API调用说明)
