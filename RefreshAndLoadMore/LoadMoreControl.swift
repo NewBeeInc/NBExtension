@@ -27,18 +27,22 @@ class LoadMoreControl: UIControl {
 
 	private var button: NBButton?
 
+	@available(*, unavailable, message="")
 	@IBOutlet weak var loadingImageView: UIImageView! {
 		didSet {
-			loadingImageView.hidden = true
+//			loadingImageView.hidden = true
 		}
 	}
+	@available(*, unavailable, message="")
 	@IBOutlet weak var promptLabel: UILabel! {
 		didSet {
-			promptLabel.hidden = false
+//			promptLabel.hidden = false
 		}
 	}
 
 	// MARK: Stored Properties
+
+
 
 	/// a flag indicates if is loading more
 	var isLoadingMore: Bool = false
@@ -90,9 +94,9 @@ class LoadMoreControl: UIControl {
 			let contentOffset = (superview as! UITableView).contentOffset
 			self.alpha = (contentOffset.y + (superview as! UIScrollView).height - (superview as! UIScrollView).contentSize.height - alphaAnimationOffset) / self.height
 			if self.alpha < 1.0 {
-				self.promptLabel.text = "上拉加载"
+//				self.promptLabel.text = "上拉加载"
 			} else {
-				self.promptLabel.text = "松开加载"
+//				self.promptLabel.text = "松开加载"
 			}
 			break
 		case &UIScrollViewContentSizeContext:
@@ -162,7 +166,7 @@ extension LoadMoreControl {
 			})
 		}
 
-		self.promptLabel.hidden = true
+		/*self.promptLabel.hidden = true
 		self.loadingImageView.hidden = false
 
 		var images = [UIImage]()
@@ -181,7 +185,7 @@ extension LoadMoreControl {
 		self.loadingImageView.animationDuration = TIMEINTERVAL_ANIMATION_DEFAULT * 5.0
 		self.loadingImageView.animationRepeatCount = 0
 		self.loadingImageView.startAnimating()
-
+	*/
 		self.sendActionsForControlEvents(UIControlEvents.ValueChanged)
 
 		self.allowEnding = false
@@ -209,10 +213,10 @@ extension LoadMoreControl {
 					(superview as! UIScrollView).contentInset = originalInset
 					}, completion: { (finished) -> Void in
 						self.isLoadingMore = false
-						self.promptLabel.hidden = false
+						/*self.promptLabel.hidden = false
 						self.loadingImageView.stopAnimating()
 						self.loadingImageView.hidden = true
-						self.loadingImageView.animationImages = nil
+						self.loadingImageView.animationImages = nil*/
 				})
 			}
 		}
