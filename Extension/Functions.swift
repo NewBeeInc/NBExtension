@@ -18,7 +18,7 @@ import Foundation
 - parameter file:      文件名称
 - parameter line:      代码行号
 */
-public func log(anyObject: AnyObject?, function: String = #function, file: String = #file, line: Int = #line) {
+public func dog(anyObject: Any?, function: String = #function, file: String = #file, line: Int = #line) {
 	#if DEBUG
 		let dateFormat		  = NSDateFormatter()
 		dateFormat.dateFormat = "HH:mm:ss.SSS"
