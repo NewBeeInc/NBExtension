@@ -196,7 +196,7 @@ extension NBButton {
 	public override func drawRect(rect: CGRect) {
 		super.drawRect(rect)
 		if borderWidth > 0 {
-			log("\(self.layer.cornerRadius)")
+		dog("\(self.layer.cornerRadius)")
 			// 1. draw border
 			// 1.1 cal rect for border path
 			let bW = rect.width - borderWidth.cgFloat

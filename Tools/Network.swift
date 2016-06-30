@@ -49,7 +49,7 @@ class Network: NSObject {
 
 			let manager = AFHTTPRequestOperationManager()
 			manager.GET(URL, parameters: parameters, success: { (operation, jsonObject) -> Void in
-				log("SUCCESS: \(URL)")
+			dog("SUCCESS: \(URL)")
 				success(response: operation.response, json: JSON(jsonObject))
 				}, failure: { (operation, error) -> Void in
 					failure()
@@ -75,7 +75,7 @@ class Network: NSObject {
 //			}
 			let manager = AFHTTPRequestOperationManager()
 			manager.POST(URL, parameters: parameters, success: { (operation, jsonObject) -> Void in
-				log("SUCCESS: \(URL)")
+			dog("SUCCESS: \(URL)")
 				success(response: operation.response, json: JSON(jsonObject))
 				}, failure: { (operation, error) -> Void in
 					failure(operation)
@@ -101,7 +101,7 @@ class Network: NSObject {
 			}
 			let manager = AFHTTPRequestOperationManager()
 			manager.PUT(URL, parameters: parameters, success: { (operation, jsonObject) -> Void in
-				log("SUCCESS: \(URL)")
+			dog("SUCCESS: \(URL)")
 				success(response: operation.response, json: JSON(jsonObject))
 				}, failure: { (operation, error) -> Void in
 					failure()

@@ -136,11 +136,11 @@ extension RefreshControl {
 		self.isRefreshing = true
 
 		UIView.animateWithDuration(TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
-			log("begin=" + NSStringFromUIEdgeInsets((superview as! UITableView).contentInset))
+		dog("begin=" + NSStringFromUIEdgeInsets((superview as! UITableView).contentInset))
 			var originalInset = (superview as! UITableView).contentInset
 			originalInset.top += self.height
 			(superview as! UITableView).contentInset = originalInset
-			log("begin=" + NSStringFromUIEdgeInsets((superview as! UITableView).contentInset))
+		dog("begin=" + NSStringFromUIEdgeInsets((superview as! UITableView).contentInset))
 			(superview as! UITableView).setContentOffset(CGPointMake(0, -self.height), animated: false)
 
 			})
@@ -194,11 +194,11 @@ extension RefreshControl {
 
 				UIView.animateWithDuration(TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
 					(superview as! UITableView).setContentOffset(CGPointMake(0, 0), animated: false)
-					log("end=" + NSStringFromUIEdgeInsets((superview as! UITableView).contentInset))
+				dog("end=" + NSStringFromUIEdgeInsets((superview as! UITableView).contentInset))
 					var originalInset = (superview as! UITableView).contentInset
 					originalInset.top -= self.height
 					(superview as! UITableView).contentInset = originalInset
-					log("end=" + NSStringFromUIEdgeInsets((superview as! UITableView).contentInset))
+				dog("end=" + NSStringFromUIEdgeInsets((superview as! UITableView).contentInset))
 					}, completion: { (finished) -> Void in
 						self.isRefreshing = false
 						self.promptLabel.hidden = false
