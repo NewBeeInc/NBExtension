@@ -24,6 +24,9 @@ private let alphaAnimationOffset = CGFloat(22.0)
 class LoadMoreControl: UIControl {
 
 	// MARK: Interafce Elements
+
+	private var button: NBButton?
+
 	@IBOutlet weak var loadingImageView: UIImageView! {
 		didSet {
 			loadingImageView.hidden = true
@@ -36,8 +39,9 @@ class LoadMoreControl: UIControl {
 	}
 
 	// MARK: Stored Properties
-	var isLoadingMore: Bool = false
 
+	/// a flag indicates if is loading more
+	var isLoadingMore: Bool = false
 	var allowEnding: Bool = false
 
 	override func awakeFromNib() {
