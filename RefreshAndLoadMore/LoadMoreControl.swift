@@ -110,7 +110,7 @@ class LoadMoreControl: UIControl {
 
 			let contentOffset = (superview as! UITableView).contentOffset
 			self.alpha = (contentOffset.y + (superview as! UIScrollView).height - (superview as! UIScrollView).contentSize.height - alphaAnimationOffset) / self.height
-			dog("\(self.alpha)")
+//			dog("\(self.alpha)")
 			if self.alpha < 1.0 {
 //				self.button.setTitle("上拉加载", forState: UIControlState.Normal)
 			} else {
