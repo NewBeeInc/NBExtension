@@ -24,89 +24,97 @@ private let minRefreshingTimeInterval = 1.0
 class RefreshControl: UIControl {
 
 	// MARK: Interface Elements
-	@IBOutlet weak var iconImageView: UIImageView! {
-		didSet {
-			iconImageView.contentMode = .ScaleAspectFit
+
+	private lazy var button: NBButton = {
+		let btn = NBButton(layoutType: LayoutType.Normal)
+		btn.setImage(UIImage(named: "loading_grey_v2_00000"), forState: UIControlState.Normal)
+		var images = [UIImage]()
+		for i in 0 ..< 29 {
+			// loading_grey_v2_00000
+			var imageName = ""
+			if i <= 9 {
+				imageName = "loading_grey_v2_0000" + "\(i)"
+			} else {
+				imageName = "loading_grey_v2_000" + "\(i)"
+			}
+			let image = UIImage(named: imageName)!
+			images.append(image)
 		}
-	}
-	@IBOutlet weak var promptLabel: UILabel! {
-		didSet {
-			promptLabel.font = UIFont.systemFontOfSize(12.0.cgFloat)
-		}
-	}
-	@IBOutlet weak var loadingImageView: UIImageView! {
-		didSet {
-			loadingImageView.contentMode = .ScaleAspectFit
-		}
-	}
+		btn.animationImages = images
+		btn.animationDuration = TIMEINTERVAL_ANIMATION_DEFAULT * 5.0
+		btn.animationRepeatCount = 0
+		self.addSubview(btn)
+		return btn
+	}()
 
 	// MARK: Stored Properties
-	var isRefreshing: Bool = false
 
+	/// a flag indicates if is refreshing
+	var isRefreshing: Bool = false
 	var allowEnding: Bool = false
 
-	override func awakeFromNib() {
-		super.awakeFromNib()
-		self.alpha = 0.0
-		self.width = SCREEN_WIDTH
-		self.height = CGFloat(44.0)
+	override init(frame: CGRect) {
+		super.init(frame: frame)
+	}
+
+	required init?(coder aDecoder: NSCoder) {
+		super.init(coder: aDecoder)
 	}
 
 	// 已经被添加至新的父控件上, 监听新父控件的contentOffset
 	override func didMoveToSuperview() {
-		guard let superview = superview
-			where superview.isKindOfClass(UITableView.self)
-		else {
-			return
-		}
-
+		guard let superview = superview where superview.isKindOfClass(UITableView.self)
+			else { return }
+		let tableView = superview as! UITableView
+		self.height = 44.0.cgFloat
         self.x    = CGFloat(0.0)
         self.maxY = CGFloat(0.0)
-		superview.addObserver(self, forKeyPath: KVOKeyPath, options: NSKeyValueObservingOptions.New, context: &UIScrollViewContentOffsetContext)
-		(superview as! UITableView).addObserver(self, forKeyPath: KVOGesture, options: .New, context: &UIPanGestureRecognizerStateContext)
+		self.width = SCREEN_WIDTH
+		tableView.addObserver(self, forKeyPath: KVOKeyPath, options: NSKeyValueObservingOptions.New, context: &UIScrollViewContentOffsetContext)
+		tableView.addObserver(self, forKeyPath: KVOGesture, options: .New, context: &UIPanGestureRecognizerStateContext)
 	}
 
 	override func layoutSubviews() {
 		self.height = CGFloat(44.0)
 		super.layoutSubviews()
+		self.button.width = SCREEN_WIDTH
+		self.button.height = self.height
+		self.button.x = 0.0
+		self.button.y = 0.0
 	}
 
 	override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+		guard let keyPath = keyPath, object = object
+			where object.isKindOfClass(UITableView.self)
+			else {
+				return
+		}
+		let tableView = object as! UITableView
 
 		switch context {
 		case &UIScrollViewContentOffsetContext:
-			guard let keyPath = keyPath, object = object
-				where object.isKindOfClass(UITableView.self)
-				else {
-					return
-			}
-
-			if let value = (object as! UITableView).valueForKey(keyPath) as? NSValue {
+			if let value = tableView.valueForKey(keyPath) as? NSValue {
 				let contentOffset = value.CGPointValue()
-				self.alpha = -(contentOffset.y) / self.height
+				if !self.isRefreshing {
+					self.alpha = -(contentOffset.y + tableView.contentInset.top) / self.height
+				}
+
 				if !isRefreshing {
 					if abs(contentOffset.y) <= height {
-                        promptLabel.text    = promptA
-                        iconImageView.image = UIImage(named: "cute")
 					} else {
-                        promptLabel.text    = promptB
-                        iconImageView.image = UIImage(named: "stay")
 					}
 				}
 			}
 			break
 
 		case &UIPanGestureRecognizerStateContext:
-			guard let object = object, superview = superview, state = change?["new"] as? Int
-				where object.isKindOfClass(UITableView.self) && superview.isKindOfClass(UITableView.self)
-			else {
-				return
-			}
+			guard let state = change?["new"] as? Int
+				else { return }
 			// 1 - began
 			// 2 - changed
 			// 3 - ended
 			if state == UIGestureRecognizerState.Ended.rawValue {
-				if (superview as! UITableView).contentOffset.y < -height {
+				if tableView.contentOffset.y + tableView.contentInset.top < -self.height {
 					beginRefreshing()
 				}
 			}
@@ -121,11 +129,8 @@ class RefreshControl: UIControl {
 // MARK: - Interface
 extension RefreshControl {
 
-	class func refreshControl() -> RefreshControl {
-		return BUNDLE_MAIN.loadNibNamed("RefreshControl", owner: nil, options: nil).first as! RefreshControl
-	}
-
 	func beginRefreshing() {
+		dog(self.isRefreshing)
 		// 如果当前正在刷新, 则直接返回
 		guard let superview = superview
 			where !self.isRefreshing && superview.isKindOfClass(UITableView.self)
@@ -134,6 +139,7 @@ extension RefreshControl {
 		}
 		
 		self.isRefreshing = true
+		self.alpha = 1.0
 
 		UIView.animateWithDuration(TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
 		dog("begin=" + NSStringFromUIEdgeInsets((superview as! UITableView).contentInset))
@@ -145,27 +151,7 @@ extension RefreshControl {
 
 			})
 
-		self.promptLabel.hidden = true
-		self.loadingImageView.hidden = false
-
-		var images = [UIImage]()
-		for i in 0 ..< 29 {
-			// loading_grey_v2_00000
-			var imageName = ""
-			if i <= 9 {
-				imageName = "loading_grey_v2_0000" + "\(i)"
-			} else {
-				imageName = "loading_grey_v2_000" + "\(i)"
-			}
-			let image = UIImage(named: imageName)!
-			images.append(image)
-		}
-		self.loadingImageView.animationImages = images
-		self.loadingImageView.animationDuration = TIMEINTERVAL_ANIMATION_DEFAULT * 5.0
-		self.loadingImageView.animationRepeatCount = 0
-		self.loadingImageView.startAnimating()
-
-		self.iconImageView.image = UIImage(named: "work")
+		self.button.startAnimating()
 
 		self.sendActionsForControlEvents(UIControlEvents.ValueChanged)
 
@@ -201,10 +187,8 @@ extension RefreshControl {
 				dog("end=" + NSStringFromUIEdgeInsets((superview as! UITableView).contentInset))
 					}, completion: { (finished) -> Void in
 						self.isRefreshing = false
-						self.promptLabel.hidden = false
-						self.loadingImageView.stopAnimating()
-						self.loadingImageView.hidden = true
-						self.loadingImageView.animationImages = nil
+						self.button.stopAnimating()
+//						self.button.animationImages = nil
 				})
 			}
 		}
