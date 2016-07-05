@@ -8,15 +8,15 @@
 
 import UIKit
 
+@objc public enum NBQRCodeScanViewControllerStyle: Int {
+	case FullScreen, Custom
+}
+
 public class NBQRCodeScanViewController: ZBarReaderViewController {
 
-	@objc enum Style: Int {
-		case FullScreen, Custom
-	}
+	private var style: NBQRCodeScanViewControllerStyle = .FullScreen
 
-	private var style: Style = .FullScreen
-
-	convenience init(style: Style) {
+	convenience init(style: NBQRCodeScanViewControllerStyle) {
 		self.init()
 		self.style = style
 		self.showsZBarControls = false
