@@ -161,7 +161,6 @@ public extension UIView {
 	- parameter badgeValue: 角标文本
 	*/
 	public func addBadge(badgeValue: String) {
-	dog(NSStringFromCGRect(self.frame))
 		self.addBadge(badgeValue, at: CGPointMake(1.0, 0.0))
 	}
 
@@ -267,34 +266,60 @@ public extension UIView {
 	/**
 	对控件进行截图
 
-	- returns: 截取的图片
+	- returns: 返回截图
 	*/
 	public func snapshot() -> UIImage? {
 		let widthInPxl = self.width
 		let heightInPxl = self.height
 		// 准备截图
 		let size = CGSizeMake(widthInPxl, heightInPxl)
-
-	dog("snapshotSize= " + NSStringFromCGSize(size))
 		var image: UIImage?
 		UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
 		if let context = UIGraphicsGetCurrentContext() {
 			self.layer.renderInContext(context)
 			image = UIGraphicsGetImageFromCurrentImageContext()
 		}
-	dog("actualSnapshotSize= " + NSStringFromCGSize(image!.size))
 		UIGraphicsEndImageContext()
 		return image
 	}
+
+	/**
+	对控件进行截图, 支持设置边缘缩进
+
+	- parameter insets: 边缘缩进, 如缩进值为负数则视为0缩进
+
+	- returns: 返回裁切后的截图
+	*/
+	public func snapshotWithEdgeInsets(insets: UIEdgeInsets) -> UIImage? {
+		guard insets.top >= 0 && insets.left >= 0 && insets.bottom >= 0 && insets.right >= 0
+			else { return self.snapshotWithEdgeInsets(UIEdgeInsetsZero) }
+
+		let fullW = self.width
+		let fullH = self.height
+		let fullS = CGSizeMake(fullW, fullH)
+
+		let clippedW = self.width - (insets.left + insets.right)
+		let clippedH = self.height - (insets.top + insets.bottom)
+		let clippedX = insets.left
+		let clippedY = insets.top
+		let clippedR = CGRectMake(clippedX, clippedY, clippedW, clippedH)
+
+		UIGraphicsBeginImageContextWithOptions(fullS, false, 0.0)
+		var fullImage: UIImage?
+		if let ctx = UIGraphicsGetCurrentContext() {
+			self.layer.renderInContext(ctx)
+			fullImage = UIGraphicsGetImageFromCurrentImageContext()
+		}
+		UIGraphicsEndImageContext()
+
+		UIGraphicsBeginImageContextWithOptions(clippedR.size, false, 0.0)
+		var clippedImage: UIImage?
+		if let _ = UIGraphicsGetCurrentContext() {
+			fullImage?.drawInRect(CGRectMake(-clippedX, -clippedY, fullW, fullH))
+			clippedImage = UIGraphicsGetImageFromCurrentImageContext()
+		}
+		UIGraphicsEndImageContext()
+		return clippedImage
+	}
 }
-
-
-
-
-
-
-
-
-
-
 
