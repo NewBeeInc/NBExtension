@@ -102,7 +102,7 @@ public extension ShareManager {
 			let imageObject = WXImageObject()
 			if let image = image {
 				if let imageData = UIImageJPEGRepresentation(image, 0.5) {
-					log("\(imageData.length)")
+				dog("\(imageData.length)")
 					imageObject.imageData = imageData
 				}
 

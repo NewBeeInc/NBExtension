@@ -48,11 +48,38 @@ public class NBButton: UIButton {
 		didSet { self.setNeedsDisplay() }
 	}
 
-	// w = 88, h = 30
-	// img = 23 * 24.5
-	// ttl = 25.5 * 20.5
-	// imgX = 19.5, imgW = 23, padding = 0.5, ttlX = 43, ttlW = 25.5
-	// 88 - (43 + 25.5) = 19.5
+	// MARK: computed property
+
+	/// animation images
+	public var animationImages: [UIImage]? {
+		set {
+			self.setImage(newValue?.first, forState: UIControlState.Normal)
+			self.imageView?.animationImages = newValue
+		}
+		get {
+			return self.imageView?.animationImages
+		}
+	}
+
+	/// animation duration
+	public var animationDuration: NSTimeInterval {
+		set {
+			self.imageView?.animationDuration = newValue
+		}
+		get {
+			return self.imageView?.animationDuration ?? 0
+		}
+	}
+
+	/// animation repeat count
+	public var animationRepeatCount: Int {
+		set {
+			self.imageView?.animationRepeatCount = newValue
+		}
+		get {
+			return self.imageView?.animationRepeatCount ?? 0
+		}
+	}
 
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -169,7 +196,7 @@ extension NBButton {
 	public override func drawRect(rect: CGRect) {
 		super.drawRect(rect)
 		if borderWidth > 0 {
-			log("\(self.layer.cornerRadius)")
+		dog("\(self.layer.cornerRadius)")
 			// 1. draw border
 			// 1.1 cal rect for border path
 			let bW = rect.width - borderWidth.cgFloat
@@ -193,5 +220,17 @@ extension NBButton {
 			fillColor.setFill()
 			fP.fill()
 		}
+	}
+
+	public func startAnimating() {
+		self.imageView?.startAnimating()
+	}
+
+	public func stopAnimating() {
+		self.imageView?.stopAnimating()
+	}
+
+	public func isAnimating() -> Bool {
+		return self.imageView?.isAnimating() ?? false
 	}
 }

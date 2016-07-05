@@ -161,7 +161,7 @@ public extension UIView {
 	- parameter badgeValue: 角标文本
 	*/
 	public func addBadge(badgeValue: String) {
-		log(NSStringFromCGRect(self.frame))
+	dog(NSStringFromCGRect(self.frame))
 		self.addBadge(badgeValue, at: CGPointMake(1.0, 0.0))
 	}
 
@@ -275,14 +275,14 @@ public extension UIView {
 		// 准备截图
 		let size = CGSizeMake(widthInPxl, heightInPxl)
 
-		log("snapshotSize= " + NSStringFromCGSize(size))
+	dog("snapshotSize= " + NSStringFromCGSize(size))
 		var image: UIImage?
 		UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
 		if let context = UIGraphicsGetCurrentContext() {
 			self.layer.renderInContext(context)
 			image = UIGraphicsGetImageFromCurrentImageContext()
 		}
-		log("actualSnapshotSize= " + NSStringFromCGSize(image!.size))
+	dog("actualSnapshotSize= " + NSStringFromCGSize(image!.size))
 		UIGraphicsEndImageContext()
 		return image
 	}

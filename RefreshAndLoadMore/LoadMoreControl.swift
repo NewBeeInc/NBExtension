@@ -23,47 +23,67 @@ private let alphaAnimationOffset = CGFloat(22.0)
 // MARK: - Class Definition
 class LoadMoreControl: UIControl {
 
-	// MARK: Interafce Elements
-	@IBOutlet weak var loadingImageView: UIImageView! {
-		didSet {
-			loadingImageView.hidden = true
+	// MARK: Interface Elements
+
+	private lazy var button: NBButton = {
+		let btn = NBButton(layoutType: LayoutType.Normal)
+		btn.setImage(UIImage(named: "loading_grey_v2_00000"), forState: UIControlState.Normal)
+		var images = [UIImage]()
+		for i in 0 ..< 29 {
+			// loading_grey_v2_00000
+			var imageName = ""
+			if i <= 9 {
+				imageName = "loading_grey_v2_0000" + "\(i)"
+			} else {
+				imageName = "loading_grey_v2_000" + "\(i)"
+			}
+			let image = UIImage(named: imageName)!
+			images.append(image)
 		}
-	}
-	@IBOutlet weak var promptLabel: UILabel! {
-		didSet {
-			promptLabel.hidden = false
-		}
-	}
+		btn.animationImages = images
+		btn.animationDuration = TIMEINTERVAL_ANIMATION_DEFAULT * 5.0
+		btn.animationRepeatCount = 0
+		self.addSubview(btn)
+		return btn
+	}()
 
 	// MARK: Stored Properties
-	var isLoadingMore: Bool = false
 
+	/// a flag indicates if is loading more
+	var isLoadingMore: Bool = false
 	var allowEnding: Bool = false
 
-	override func awakeFromNib() {
-		super.awakeFromNib()
-		self.alpha = 1.0
-		self.width = SCREEN_WIDTH
-		self.height = CGFloat(44.0)
+	override init(frame: CGRect) {
+		super.init(frame: frame)
+	}
+
+	required init?(coder aDecoder: NSCoder) {
+		super.init(coder: aDecoder)
 	}
 
 	override func didMoveToSuperview() {
-		guard let superview = superview
-			where superview.isKindOfClass(UITableView.self)
-			else {
-				return
-		}
+		// once added to superview...
+		// 1. make sure superview is class of UITableView
+		guard let superview = superview where superview.isKindOfClass(UITableView.self)
+			else { return }
+		let tableView = superview as! UITableView
+		// 2. check out superview (UITableView) content height
+		let contentH = tableView.contentSize.height
+		dog(contentH)
+		// 3. checkout superview's visible height
+		let visibleH = tableView.height - (tableView.contentInset.top + tableView.contentInset.bottom)
+		dog(visibleH)
 
 		self.x = CGFloat(0.0)
 
-		let contentSizeHeight = (superview as! UITableView).contentSize.height
-		let superviewVisibleHeight = superview.height - ((superview as! UIScrollView).contentInset.top + (superview as! UIScrollView).contentInset.bottom)
-		if contentSizeHeight < superviewVisibleHeight {
-			(superview as! UIScrollView).contentSize = CGSizeMake(SCREEN_WIDTH, superviewVisibleHeight)
-			self.y = superviewVisibleHeight
+		if contentH < visibleH {
+//			tableView.contentSize = CGSizeMake(SCREEN_WIDTH, visibleH)
+			self.y = visibleH
 		} else {
-			self.y = contentSizeHeight
+			self.y = contentH
 		}
+		self.width = SCREEN_WIDTH
+		self.height = 44.0.cgFloat
 		superview.addObserver(self, forKeyPath: KVOKeyPath, options: NSKeyValueObservingOptions.New, context: &UIScrollViewContentOffsetContext)
 		superview.addObserver(self, forKeyPath: KVOKeyPathContentSize, options: NSKeyValueObservingOptions.New, context: &UIScrollViewContentSizeContext)
 		(superview as! UITableView).addObserver(self, forKeyPath: KVOGesture, options: NSKeyValueObservingOptions.New, context: &UIPanGestureRecognizerStateContext)
@@ -72,6 +92,11 @@ class LoadMoreControl: UIControl {
 	override func layoutSubviews() {
 		self.height = CGFloat(44.0)
 		super.layoutSubviews()
+		self.button.width = SCREEN_WIDTH
+		self.button.height = self.height
+		self.button.x = 0.0
+		self.button.y = 0.0
+		dog(self.button)
 	}
 
 	override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
@@ -85,10 +110,11 @@ class LoadMoreControl: UIControl {
 
 			let contentOffset = (superview as! UITableView).contentOffset
 			self.alpha = (contentOffset.y + (superview as! UIScrollView).height - (superview as! UIScrollView).contentSize.height - alphaAnimationOffset) / self.height
+//			dog("\(self.alpha)")
 			if self.alpha < 1.0 {
-				self.promptLabel.text = "上拉加载"
+//				self.button.setTitle("上拉加载", forState: UIControlState.Normal)
 			} else {
-				self.promptLabel.text = "松开加载"
+//				self.button.setTitle("松开加载", forState: UIControlState.Normal)
 			}
 			break
 		case &UIScrollViewContentSizeContext:
@@ -131,52 +157,28 @@ class LoadMoreControl: UIControl {
 // MARK: - Interface
 extension LoadMoreControl {
 
-	class func loadMoreControl() -> LoadMoreControl {
-		return BUNDLE_MAIN.loadNibNamed("LoadMoreControl", owner: nil, options: nil).first as! LoadMoreControl
-	}
-
 	func beginLoadingMore() {
 
 		// 0. 如果当前正在加载, 则直接返回
-		guard let superview = superview
-			where !isLoadingMore && superview.isKindOfClass(UITableView.self)
-		else {
-			return
-		}
-		
+		guard let superview = superview where !isLoadingMore && superview.isKindOfClass(UITableView.self)
+			else { return }
+		let tableView = superview as! UITableView
 		// 1. 开始加载旧的评价
 		self.isLoadingMore = true
 
-		if (superview as! UITableView).contentOffset.y != self.height {
+		if tableView.contentOffset.y != self.height {
 			UIView.animateWithDuration(TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
 				var originalInset = (superview as! UITableView).contentInset
 				originalInset.bottom += self.height
-				(superview as! UIScrollView).contentInset = originalInset
-				let contentH = (superview as! UITableView).contentSize.height
-				let tableViewH = (superview as! UITableView).height
-				(superview as! UITableView).setContentOffset(CGPointMake(0, contentH + self.height - tableViewH), animated: false)
+				tableView.contentInset = originalInset
+				let contentH = tableView.contentSize.height
+				let tableViewH = tableView.height
+				tableView.setContentOffset(CGPointMake(0, contentH + self.height - tableViewH), animated: false)
 			})
 		}
 
-		self.promptLabel.hidden = true
-		self.loadingImageView.hidden = false
 
-		var images = [UIImage]()
-		for i in 0 ..< 29 {
-			// loading_grey_v2_00000
-			var imageName = ""
-			if i <= 9 {
-				imageName = "loading_grey_v2_0000" + "\(i)"
-			} else {
-				imageName = "loading_grey_v2_000" + "\(i)"
-			}
-			let image = UIImage(named: imageName)!
-			images.append(image)
-		}
-		self.loadingImageView.animationImages = images
-		self.loadingImageView.animationDuration = TIMEINTERVAL_ANIMATION_DEFAULT * 5.0
-		self.loadingImageView.animationRepeatCount = 0
-		self.loadingImageView.startAnimating()
+		self.button.startAnimating()
 
 		self.sendActionsForControlEvents(UIControlEvents.ValueChanged)
 
@@ -205,10 +207,8 @@ extension LoadMoreControl {
 					(superview as! UIScrollView).contentInset = originalInset
 					}, completion: { (finished) -> Void in
 						self.isLoadingMore = false
-						self.promptLabel.hidden = false
-						self.loadingImageView.stopAnimating()
-						self.loadingImageView.hidden = true
-						self.loadingImageView.animationImages = nil
+						self.button.stopAnimating()
+//						self.button.animationImages = nil
 				})
 			}
 		}
