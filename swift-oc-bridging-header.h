@@ -7,3 +7,4 @@
 #import "WXApi.h"
 #import "WXApiObject.h"
 #import "ZBarSDK.h"
+#import "UncaughtExceptionHandler.h"
