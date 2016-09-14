@@ -19,7 +19,7 @@ public extension UINavigationController {
 	*/
 	public func setBottomSeparatorHidden(_ hidden: Bool) {
 		for naviBarSubview in self.navigationBar.subviews {
-			if (naviBarSubview.isKind(of: NSClassFromString("_UINavigationBarBackground")!)) {
+			if (naviBarSubview.isKind(of: NSClassFromString("_UIBarBackground")!)) {
 				let navigationBarBackground: UIView = naviBarSubview
 				for navigationBarBackgroundSubview in navigationBarBackground.subviews {
 					if (navigationBarBackgroundSubview.isKind(of: UIImageView.self)) {
@@ -38,7 +38,7 @@ public extension UINavigationController {
 	*/
 	public func setBarBackgroundColor(_ color: UIColor) {
 		for naviBarSubview in self.navigationBar.subviews {
-			if (naviBarSubview.isKind(of: NSClassFromString("_UINavigationBarBackground")!)) {
+			if (naviBarSubview.isKind(of: NSClassFromString("_UIBarBackground")!)) {
 				let navigationBarBackground: UIView = naviBarSubview
 				navigationBarBackground.backgroundColor = color
 			}
