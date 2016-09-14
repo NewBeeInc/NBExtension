@@ -15,7 +15,7 @@ import UIKit
 // MARK: - [控件]<#描述#>
 
 /// <#描述#>
-public class FocusView: UIControl {
+open class FocusView: UIControl {
 
 	// MARK: 控件属性
 
@@ -26,7 +26,7 @@ public class FocusView: UIControl {
 	lazy var blurView: UIVisualEffectView = {
 		let blurView = UIVisualEffectView(effect: nil)
 		blurView.alpha = 0.7
-		self.insertSubview(blurView, atIndex: 0)
+		self.insertSubview(blurView, at: 0)
 		return blurView
 	}()
 
@@ -38,8 +38,8 @@ public class FocusView: UIControl {
 
 	// MARK: 排布子控件
 
-	@available(*, unavailable, message="don't call this method directly")
-	override public func layoutSubviews() {
+	@available(*, unavailable, message: "don't call this method directly")
+	override open func layoutSubviews() {
 		super.layoutSubviews()
 
 	}

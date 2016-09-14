@@ -51,7 +51,7 @@ public extension UIFont {
 
 	- returns: 返回一个指定大小的Noteworthy字体对象
 	*/
-	public class func noteworthy(size: Double) -> UIFont {
+	public class func noteworthy(_ size: Double) -> UIFont {
 		return UIFont(fontName: Name.Noteworthy, size: size)!
 	}
 
@@ -62,7 +62,7 @@ public extension UIFont {
 
 	- returns: 返回一个指定大小的Noteworthy-Bold字体对象
 	*/
-	public class func noteworthyBold(size: Double) -> UIFont {
+	public class func noteworthyBold(_ size: Double) -> UIFont {
 		return UIFont(fontName: Name.NoteworthyBold, size: size)!
 	}
 
@@ -73,7 +73,7 @@ public extension UIFont {
 
 	- returns: 返回一个指定大小的HelveticaNeue-Light字体对象
 	*/
-	public class func helveticaNeueLight(size: Double) -> UIFont {
+	public class func helveticaNeueLight(_ size: Double) -> UIFont {
 		return UIFont(fontName: Name.HelveticaNeueLight, size: size)!
 	}
 
@@ -84,11 +84,11 @@ public extension UIFont {
 
 	- returns: 返回一个指定大小的HelveticaNeue-Thin字体对象
 	*/
-	public class func helveticaNeueThin(size: Double) -> UIFont {
+	public class func helveticaNeueThin(_ size: Double) -> UIFont {
 		return UIFont(fontName: Name.HelveticaNeueThin, size: size)!
 	}
 
-	public class func helveticaNeue(size: Double) -> UIFont {
+	public class func helveticaNeue(_ size: Double) -> UIFont {
 		return UIFont(fontName: Name.HelveticaNeue, size: size)!
 	}
 

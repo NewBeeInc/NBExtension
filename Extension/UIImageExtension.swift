@@ -31,28 +31,28 @@ public extension UIImage {
 
 	- returns: 裁剪后的新UIImage对象
 	*/
-	public class func circularImageWith(original: UIImage?, borderColor: UIColor?, borderWidth: CGFloat) -> UIImage? {
+	public class func circularImageWith(_ original: UIImage?, borderColor: UIColor?, borderWidth: CGFloat) -> UIImage? {
 		if let image = original {
 			let contextWidth  = image.width  + borderWidth * CGFloat(2.0)
 			let contextHeight = image.height + borderWidth * CGFloat(2.0)
-			let contextSize   = CGSizeMake(contextWidth, contextHeight)
+			let contextSize   = CGSize(width: contextWidth, height: contextHeight)
 
-			let outerRect = CGRectMake(0.0, 0.0, contextWidth, contextHeight)
-			let innerRect = CGRectMake(borderWidth, borderWidth, image.width, image.height)
+			let outerRect = CGRect(x: 0.0, y: 0.0, width: contextWidth, height: contextHeight)
+			let innerRect = CGRect(x: borderWidth, y: borderWidth, width: image.width, height: image.height)
 
 			UIGraphicsBeginImageContextWithOptions(contextSize, false, 0.0)
 			let context = UIGraphicsGetCurrentContext()
 
 			if let color = borderColor {
-				CGContextAddEllipseInRect(context, outerRect)
+				context?.addEllipse(in: outerRect)
 				color.set()
-				CGContextFillPath(context)
+				context?.fillPath()
 			}
 
-			CGContextAddEllipseInRect(context, innerRect)
-			CGContextClip(context)
+			context?.addEllipse(in: innerRect)
+			context?.clip()
 
-			image.drawInRect(innerRect)
+			image.draw(in: innerRect)
 
 			let newImage = UIGraphicsGetImageFromCurrentImageContext()
 
@@ -86,7 +86,7 @@ public extension UIImage {
 
 	- returns: 裁剪后的新UIImage对象
 	*/
-	public class func circularImageWith(original: UIImage?) -> UIImage? {
+	public class func circularImageWith(_ original: UIImage?) -> UIImage? {
 		return UIImage.circularImageWith(original, borderColor: nil, borderWidth: 0.0)
 	}
 
@@ -111,28 +111,28 @@ public extension UIImage {
 
 	- returns: 裁剪后的新UIImage对象
 	*/
-	public class func circularImage(original: UIImage?, size: CGSize, borderColor: UIColor?, borderWidth: CGFloat) -> UIImage? {
+	public class func circularImage(_ original: UIImage?, size: CGSize, borderColor: UIColor?, borderWidth: CGFloat) -> UIImage? {
 		if let image = original {
 			let contextWidth  = size.width
 			let contextHeight = size.height
-			let contextSize   = CGSizeMake(contextWidth, contextHeight)
+			let contextSize   = CGSize(width: contextWidth, height: contextHeight)
 
-			let outerRect = CGRectMake(0.0, 0.0, contextWidth, contextHeight)
-			let innerRect = CGRectMake(borderWidth, borderWidth, contextWidth - borderWidth * 2.0, contextHeight - borderWidth * 2.0)
+			let outerRect = CGRect(x: 0.0, y: 0.0, width: contextWidth, height: contextHeight)
+			let innerRect = CGRect(x: borderWidth, y: borderWidth, width: contextWidth - borderWidth * 2.0, height: contextHeight - borderWidth * 2.0)
 
 			UIGraphicsBeginImageContextWithOptions(contextSize, false, 0.0)
 			let context = UIGraphicsGetCurrentContext()
 
 			if let color = borderColor {
-				CGContextAddEllipseInRect(context, outerRect)
+				context?.addEllipse(in: outerRect)
 				color.set()
-				CGContextFillPath(context)
+				context?.fillPath()
 			}
 
-			CGContextAddEllipseInRect(context, innerRect)
-			CGContextClip(context)
+			context?.addEllipse(in: innerRect)
+			context?.clip()
 
-			image.drawInRect(innerRect)
+			image.draw(in: innerRect)
 
 			let newImage = UIGraphicsGetImageFromCurrentImageContext()
 
@@ -167,18 +167,18 @@ public extension UIImage {
 
 	- returns: 缩放后的新图片
 	*/
-	public func imageScaledBy(scale: CGFloat) -> UIImage {
+	public func imageScaledBy(_ scale: CGFloat) -> UIImage {
 		let imageW = self.width
 		let imageH = self.height
 		let targetW = imageW * scale
 		let targetH = imageH * scale
-		let targetRect = CGRectMake(0.0, 0.0, targetW, targetH)
+		let targetRect = CGRect(x: 0.0, y: 0.0, width: targetW, height: targetH)
 
 		UIGraphicsBeginImageContextWithOptions(targetRect.size, false, 0.0)
-		self.drawInRect(targetRect)
+		self.draw(in: targetRect)
 		let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
 		UIGraphicsEndImageContext()
 
-		return scaledImage
+		return scaledImage!
 	}
 }

@@ -17,14 +17,14 @@ public let HOUR_PER_DAY      = 24
 
 // MARK: - NSDate扩展, 快速访问NSDate对象的年/月/日/时/分/秒读数
 
-public extension NSDate {
+public extension Date {
 
 	/// 秒针读数(字符串)
 	public var second: String {
 		get {
-			let formatter = NSDateFormatter()
+			let formatter = DateFormatter()
 			formatter.dateFormat = "ss"
-			return formatter.stringFromDate(self)
+			return formatter.string(from: self)
 		}
 	}
 
@@ -36,9 +36,9 @@ public extension NSDate {
 	/// 分针读数(字符串)
 	public var minute: String {
 		get {
-			let formatter = NSDateFormatter()
+			let formatter = DateFormatter()
 			formatter.dateFormat = "mm"
-			return formatter.stringFromDate(self)
+			return formatter.string(from: self)
 		}
 	}
 
@@ -50,9 +50,9 @@ public extension NSDate {
 	/// 12小时制时针读数(字符串)
 	public var hour12: String {
 		get {
-			let formatter = NSDateFormatter()
+			let formatter = DateFormatter()
 			formatter.dateFormat = "hh"
-			return formatter.stringFromDate(self)
+			return formatter.string(from: self)
 		}
 	}
 
@@ -64,9 +64,9 @@ public extension NSDate {
 	/// 24小时制时针读数(字符串)
 	public var hour24: String {
 		get {
-			let formatter = NSDateFormatter()
+			let formatter = DateFormatter()
 			formatter.dateFormat = "HH"
-			return formatter.stringFromDate(self)
+			return formatter.string(from: self)
 		}
 	}
 
@@ -78,9 +78,9 @@ public extension NSDate {
 	/// 日(字符串)
 	public var day: String {
 		get {
-			let formatter = NSDateFormatter()
+			let formatter = DateFormatter()
 			formatter.dateFormat = "dd"
-			return formatter.stringFromDate(self)
+			return formatter.string(from: self)
 		}
 	}
 
@@ -92,9 +92,9 @@ public extension NSDate {
 	/// 月(字符串)
 	public var month: String {
 		get {
-			let formatter = NSDateFormatter()
+			let formatter = DateFormatter()
 			formatter.dateFormat = "MM"
-			return formatter.stringFromDate(self)
+			return formatter.string(from: self)
 		}
 	}
 
@@ -106,9 +106,9 @@ public extension NSDate {
 	/// 年(字符串)
 	public var year: String {
 		get {
-			let formatter = NSDateFormatter()
+			let formatter = DateFormatter()
 			formatter.dateFormat = "yyyy"
-			return formatter.stringFromDate(self)
+			return formatter.string(from: self)
 		}
 	}
 
@@ -120,7 +120,7 @@ public extension NSDate {
 
 // MARK: - NSDate扩展, 时间差计算
 
-public extension NSDate {
+public extension Date {
 
 	/// 指定的NSDate对象距离现在的分钟数
 	public var timeIntervalFromNowInMinute: Int {
@@ -151,7 +151,7 @@ public extension NSDate {
 
 // MARK: - NSDate扩展, 时间判断
 
-public extension NSDate {
+public extension Date {
 
 	/// 未来?
 	public var isFuture: Bool {
@@ -178,10 +178,10 @@ public extension NSDate {
 
 	/// 今天?
 	public var isToday: Bool {
-		let formatter = NSDateFormatter()
+		let formatter = DateFormatter()
 		formatter.dateFormat = "yyyy-MM-dd"
-		let dateString = formatter.stringFromDate(self)
-		let todayString = formatter.stringFromDate(NSDate())
+		let dateString = formatter.string(from: self)
+		let todayString = formatter.string(from: Date())
 
 		return dateString == todayString
 	}
@@ -210,20 +210,20 @@ public extension NSDate {
 
 	/// 本月?
 	public var isThisMonth: Bool {
-		let formatter = NSDateFormatter()
+		let formatter = DateFormatter()
 		formatter.dateFormat = "yyyy-MM"
-		let dateString = formatter.stringFromDate(self)
-		let todayString = formatter.stringFromDate(NSDate())
+		let dateString = formatter.string(from: self)
+		let todayString = formatter.string(from: Date())
 
 		return dateString == todayString
 	}
 
 	/// 今年?
 	public var isThisYear: Bool {
-		let formatter = NSDateFormatter()
+		let formatter = DateFormatter()
 		formatter.dateFormat = "yyyy"
-		let dateString = formatter.stringFromDate(self)
-		let todayString = formatter.stringFromDate(NSDate())
+		let dateString = formatter.string(from: self)
+		let todayString = formatter.string(from: Date())
 
 		return dateString == todayString
 	}

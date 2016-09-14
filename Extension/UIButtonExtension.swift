@@ -10,7 +10,7 @@ import UIKit
 
 extension UIButton {
     
-    func sizeToFitWithInsets(insets: UIEdgeInsets) {
+    func sizeToFitWithInsets(_ insets: UIEdgeInsets) {
         // 计算宽度
         let imgW = (self.imageView?.image == nil ? 0.0 : (self.imageView!.image!.width / SCREEN_SCALE))
         let ttlW = (self.titleLabel?.text == nil ? 0.0 : self.titleLabel!.text!.boundingRectWith(CGSIZE_MAX, font: self.titleLabel?.font).width)

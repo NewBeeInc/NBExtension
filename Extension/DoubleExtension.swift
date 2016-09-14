@@ -19,16 +19,16 @@ public extension Double {
 	public var int: Int { return Int(self) }
 
 	/// 四舍五入保留小数点后1位
-	@available(*, deprecated, message="user -roundTo(_:) instead")
+	@available(*, deprecated, message: "user -roundTo(_:) instead")
 	var roundTo1: Double {
-		let converter = NSNumberFormatter()
-		let formatter = NSNumberFormatter()
-		formatter.numberStyle = NSNumberFormatterStyle.NoStyle
+		let converter = NumberFormatter()
+		let formatter = NumberFormatter()
+		formatter.numberStyle = NumberFormatter.Style.none
 		formatter.minimumFractionDigits = 1
-		formatter.roundingMode = .RoundDown
+		formatter.roundingMode = .down
 		formatter.maximumFractionDigits = 1
-		if let stringFromDouble =  formatter.stringFromNumber(self) {
-			if let doubleFromString = converter.numberFromString( stringFromDouble ) as? Double {
+		if let stringFromDouble =  formatter.string(from: NSNumber(value: self)) {
+			if let doubleFromString = converter.number( from: stringFromDouble ) as? Double {
 				return doubleFromString
 			}
 		}
@@ -50,15 +50,15 @@ public extension Double {
 
 	- returns: 四舍五入后的数值
 	*/
-	public func roundTo(to: Int) -> Double {
-		let converter = NSNumberFormatter()
-		let formatter = NSNumberFormatter()
-        formatter.numberStyle           = NSNumberFormatterStyle.NoStyle
+	public func roundTo(_ to: Int) -> Double {
+		let converter = NumberFormatter()
+		let formatter = NumberFormatter()
+        formatter.numberStyle           = NumberFormatter.Style.none
         formatter.minimumFractionDigits = to
-        formatter.roundingMode          = .RoundDown
+        formatter.roundingMode          = .down
         formatter.maximumFractionDigits = to
-		if let stringFromDouble =  formatter.stringFromNumber(self) {
-			if let doubleFromString = converter.numberFromString(stringFromDouble) as? Double {
+		if let stringFromDouble =  formatter.string(from: NSNumber(value: self)) {
+			if let doubleFromString = converter.number(from: stringFromDouble) as? Double {
 				return doubleFromString
 			}
 		}

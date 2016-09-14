@@ -12,13 +12,13 @@ import UIKit
 // MARK: - 系统单例便捷访问
 
 /// 当前激活的窗口
-public let KeyWindow          = UIApplication.sharedApplication().keyWindow
+public let KeyWindow          = UIApplication.shared.keyWindow
 
 /// 通知中心
-public let NotificationCenter = NSNotificationCenter.defaultCenter()
+public let NotificationCenter = Foundation.NotificationCenter.default
 
 /// 主Bundle
-public let BUNDLE_MAIN        = NSBundle.mainBundle()
+public let BUNDLE_MAIN        = Bundle.main
 
 /// 当前设备
-public let DEVICE             = UIDevice.currentDevice()
+public let DEVICE             = UIDevice.current

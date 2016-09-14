@@ -27,7 +27,7 @@ public extension String {
 	- returns: 单个字符
 	*/
 	public subscript (i: Int) -> Character {
-		return self[self.startIndex.advancedBy(i)]
+		return self[self.characters.index(self.startIndex, offsetBy: i)]
 	}
 
 	/**
@@ -47,14 +47,14 @@ public extension String {
 	- parameter size:       文本排版的限制尺寸
 	- parameter attributes: 文本属性
 	*/
-	public func boundingRectWithSize(size: CGSize, attributes: Dictionary<String, AnyObject>?) -> CGRect {
-		return (self as NSString).boundingRectWithSize(size, options: .UsesLineFragmentOrigin, attributes: attributes, context: nil)
+	public func boundingRectWithSize(_ size: CGSize, attributes: Dictionary<String, AnyObject>?) -> CGRect {
+		return (self as NSString).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil)
 	}
 
-	public func boundingRectWith(size: CGSize, font: UIFont?) -> CGRect {
-		if font == nil { return CGRectZero }
+	public func boundingRectWith(_ size: CGSize, font: UIFont?) -> CGRect {
+		if font == nil { return CGRect.zero }
 
-		return (self as NSString).boundingRectWithSize(size, options: .UsesLineFragmentOrigin, attributes: [NSFontAttributeName: font!], context: nil)
+		return (self as NSString).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: [NSFontAttributeName: font!], context: nil)
 	}
 
 	/**
@@ -65,7 +65,7 @@ public extension String {
 	- returns: 按索引范围截取的新字符串
 	*/
 	public subscript (r: Range<Int>) -> String {
-		return substringWithRange(Range(start: startIndex.advancedBy(r.startIndex), end: startIndex.advancedBy(r.endIndex)))
+		return substring(with: (characters.index(startIndex, offsetBy: r.lowerBound) ..< characters.index(startIndex, offsetBy: r.upperBound)))
 	}
 
 	/**
@@ -74,26 +74,26 @@ public extension String {
 	- returns: 经过MD5加密后的字符串
 	*/
 	public func md5() -> String! {
-		let str = self.cStringUsingEncoding(NSUTF8StringEncoding)
-		let strLen = CUnsignedInt(self.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))
+		let str = self.cString(using: String.Encoding.utf8)
+		let strLen = CUnsignedInt(self.lengthOfBytes(using: String.Encoding.utf8))
 		let digestLen = Int(CC_MD5_DIGEST_LENGTH)
-		let result = UnsafeMutablePointer<CUnsignedChar>.alloc(digestLen)
+		let result = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: digestLen)
 		CC_MD5(str!, strLen, result)
 		let hash = NSMutableString()
 		for i in 0 ..< digestLen {
 			hash.appendFormat("%02x", result[i])
 		}
-		result.destroy()
+		result.deinitialize()
 		return String(format: hash as String)
 	}
 
-	public var bytesInfo: (UnsafePointer<UInt8>?, Int) {
-		guard let data = (self as NSString).dataUsingEncoding(NSUTF8StringEncoding) else {
+	public var bytesInfo: (UnsafeRawPointer?, Int) {
+		guard let data = (self as NSString).data(using: String.Encoding.utf8.rawValue) else {
 			return (nil, 0)
 		}
-		let bytes = data.bytes
-		let length = data.length
-		return (UnsafePointer<UInt8>(bytes), length)
+		let bytes = (data as NSData).bytes
+		let length = data.count
+		return (bytes, length)
 	}
 
 	/**
@@ -104,8 +104,8 @@ public extension String {
 	public func isEmail() -> Bool {
 		let string = self as NSString
 		let pattern = "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}$"
-		let regex = try? NSRegularExpression(pattern: pattern, options: NSRegularExpressionOptions.CaseInsensitive)
-		let match = regex?.firstMatchInString(self, options: NSMatchingOptions.ReportProgress, range: NSMakeRange(0, string.length))
+		let regex = try? NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
+		let match = regex?.firstMatch(in: self, options: NSRegularExpression.MatchingOptions.reportProgress, range: NSMakeRange(0, string.length))
 		return (match != nil) ? true : false
 	}
 
@@ -117,8 +117,8 @@ public extension String {
 	public func isMobile() -> Bool {
 		let string = self as NSString
 		let pattern = "^1[0-9]\\d{9}$"
-		let regex = try? NSRegularExpression(pattern: pattern, options: NSRegularExpressionOptions.CaseInsensitive)
-		let match = regex?.firstMatchInString(self, options: NSMatchingOptions.ReportProgress, range: NSMakeRange(0, string.length))
+		let regex = try? NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
+		let match = regex?.firstMatch(in: self, options: NSRegularExpression.MatchingOptions.reportProgress, range: NSMakeRange(0, string.length))
 		return (match != nil) ? true : false
 	}
 
@@ -130,8 +130,8 @@ public extension String {
 	public func isCaptcha() -> Bool {
 		let string = self as NSString
 		let pattern = "^[0-9]+$"
-		let regex = try? NSRegularExpression(pattern: pattern, options: NSRegularExpressionOptions.CaseInsensitive)
-		let match = regex?.firstMatchInString(self, options: NSMatchingOptions.ReportProgress, range: NSMakeRange(0, string.length))
+		let regex = try? NSRegularExpression(pattern: pattern, options: NSRegularExpression.Options.caseInsensitive)
+		let match = regex?.firstMatch(in: self, options: NSRegularExpression.MatchingOptions.reportProgress, range: NSMakeRange(0, string.length))
 		return (match != nil) ? true : false
 	}
 }

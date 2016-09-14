@@ -75,7 +75,7 @@ public extension UIView {
 
 	/// 中点
 	public var centre: CGPoint {
-		get { return CGPointMake(self.centerX, self.centerY) }
+		get { return CGPoint(x: self.centerX, y: self.centerY) }
 		set {
 			self.centerX = newValue.x
 			self.centerY = newValue.y
@@ -88,22 +88,22 @@ public extension UIView {
 public extension UIView {
 
 	/// 默认的阴影色深
-	private var defaultShadowOpacity: Float {
+	fileprivate var defaultShadowOpacity: Float {
 		return Float(0.65)
 	}
 
 	/// 默认的阴影偏移量 - X轴
-	private var defaultShadowOffsetX: CGFloat {
+	fileprivate var defaultShadowOffsetX: CGFloat {
 		return 0.0.cgFloat
 	}
 
 	/// 默认的阴影偏移量 - Y轴
-	private var defaultShadowOffsetY: CGFloat {
+	fileprivate var defaultShadowOffsetY: CGFloat {
 		return 2.0.cgFloat
 	}
 
 	/// 默认的阴影发散度
-	private var defaultShadowRadius: CGFloat {
+	fileprivate var defaultShadowRadius: CGFloat {
 		return 3.0.cgFloat
 	}
 
@@ -112,7 +112,7 @@ public extension UIView {
 	*/
 	public func configShadow() {
         self.layer.shadowOpacity = self.defaultShadowOpacity
-        self.layer.shadowOffset  = CGSizeMake(self.defaultShadowOffsetX, self.defaultShadowOffsetY)
+        self.layer.shadowOffset  = CGSize(width: self.defaultShadowOffsetX, height: self.defaultShadowOffsetY)
         self.layer.shadowRadius  = self.defaultShadowRadius
 	}
 
@@ -124,12 +124,12 @@ public extension UIView {
 	- parameter offsetY: 纵轴偏移
 	- parameter radius:  羽化半径
 	*/
-	public func configShadow(opacity opacity: Double?, offsetX: Double?, offsetY: Double?, radius: Double?) {
+	public func configShadow(opacity: Double?, offsetX: Double?, offsetY: Double?, radius: Double?) {
 
 		self.layer.shadowOpacity = (opacity == nil) ? self.defaultShadowOpacity : Float(opacity!)
-		self.layer.shadowOffset  = CGSizeMake(
-			(offsetX == nil) ? self.defaultShadowOffsetX : offsetX!.cgFloat,
-			(offsetY == nil) ? self.defaultShadowOffsetY : offsetY!.cgFloat
+		self.layer.shadowOffset  = CGSize(
+			width: (offsetX == nil) ? self.defaultShadowOffsetX : offsetX!.cgFloat,
+			height: (offsetY == nil) ? self.defaultShadowOffsetY : offsetY!.cgFloat
 		)
 		self.layer.shadowRadius  = (radius == nil) ? self.defaultShadowRadius : radius!.cgFloat
 	}
@@ -145,7 +145,7 @@ public extension UIView {
 	- parameter cornerRadius:  圆角半径
 	- parameter masksToBounds: 是否裁切
 	*/
-	public func configCornerRadius(cornerRadius: Double, masksToBounds: Bool) {
+	public func configCornerRadius(_ cornerRadius: Double, masksToBounds: Bool) {
 		self.layer.cornerRadius = cornerRadius.cgFloat
 		self.layer.masksToBounds = masksToBounds
 	}
@@ -160,8 +160,8 @@ public extension UIView {
 
 	- parameter badgeValue: 角标文本
 	*/
-	public func addBadge(badgeValue: String) {
-		self.addBadge(badgeValue, at: CGPointMake(1.0, 0.0))
+	public func addBadge(_ badgeValue: String) {
+		self.addBadge(badgeValue, at: CGPoint(x: 1.0, y: 0.0))
 	}
 
 	/**
@@ -170,26 +170,26 @@ public extension UIView {
 	- parameter badgeValue: 角标文本
 	- parameter at:         位置(0.0~1.0)
 	*/
-	public func addBadge(badgeValue: String, at: CGPoint) {
+	public func addBadge(_ badgeValue: String, at: CGPoint) {
 		// 判断当前是否已经有角标
 		if let badge = self.viewWithTag(TAG_FOR_BADGE_LABEL) as? UILabel {
 			badge.text = badgeValue
 			return
 		}
 		// 创建label
-		let badge = UILabel(frame: CGRectZero)
+		let badge = UILabel(frame: CGRect.zero)
 		badge.tag = TAG_FOR_BADGE_LABEL
 		// 设置文本
 		badge.text = badgeValue
 		// 调整尺寸
-		badge.font                = UIFont.systemFontOfSize(12.0)
-		badge.sizeToFitWithTextSizeLimits(CGSIZE_MAX, andInsets: UIEdgeInsetsZero)
+		badge.font                = UIFont.systemFont(ofSize: 12.0)
+		badge.sizeToFitWithTextSizeLimits(CGSIZE_MAX, andInsets: UIEdgeInsets.zero)
 		badge.width = max(badge.width, badge.height) // 宽度至少应该与高度一致, 保证字符串长度较短时, label以圆形的方式显示
 		// 设置各项属性
 		badge.layer.cornerRadius  = badge.height * 0.5
 		badge.layer.masksToBounds = true
-		badge.backgroundColor     = UIColor.redColor()
-		badge.textColor           = UIColor.whiteColor()
+		badge.backgroundColor     = UIColor.red
+		badge.textColor           = UIColor.white
 		self.addSubview(badge)
 
 		badge.centerX = self.width * at.x
@@ -215,8 +215,8 @@ public extension UIView {
 		if self.isNowLoading() {
 			return
 		}
-		let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.Gray)
-		self.hidden = true
+		let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.gray)
+		self.isHidden = true
 		activityIndicator.centre = self.centre
 		self.superview?.addSubview(activityIndicator)
 		activityIndicator.startAnimating()
@@ -231,11 +231,11 @@ public extension UIView {
 		}
 		if let superview = self.superview {
 			for subview in superview.subviews {
-				if subview.isKindOfClass(UIActivityIndicatorView.self) {
+				if subview.isKind(of: UIActivityIndicatorView.self) {
 					let activityIndicator = subview as! UIActivityIndicatorView
 					activityIndicator.stopAnimating()
 					activityIndicator.removeFromSuperview()
-					self.hidden = false
+					self.isHidden = false
 				}
 			}
 		}
@@ -246,12 +246,12 @@ public extension UIView {
 
 	- returns: 布尔值
 	*/
-	private func isNowLoading() -> Bool {
+	fileprivate func isNowLoading() -> Bool {
 		if let superview = self.superview {
 			for subview in superview.subviews {
-				if subview.isKindOfClass(UIActivityIndicatorView.self) {
+				if subview.isKind(of: UIActivityIndicatorView.self) {
 					let activityIndicator = subview as! UIActivityIndicatorView
-					return activityIndicator.isAnimating()
+					return activityIndicator.isAnimating
 				}
 			}
 		}
@@ -272,11 +272,11 @@ public extension UIView {
 		let widthInPxl = self.width
 		let heightInPxl = self.height
 		// 准备截图
-		let size = CGSizeMake(widthInPxl, heightInPxl)
+		let size = CGSize(width: widthInPxl, height: heightInPxl)
 		var image: UIImage?
 		UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
 		if let context = UIGraphicsGetCurrentContext() {
-			self.layer.renderInContext(context)
+			self.layer.render(in: context)
 			image = UIGraphicsGetImageFromCurrentImageContext()
 		}
 		UIGraphicsEndImageContext()
@@ -290,24 +290,24 @@ public extension UIView {
 
 	- returns: 返回裁切后的截图
 	*/
-	public func snapshotWithEdgeInsets(insets: UIEdgeInsets) -> UIImage? {
+	public func snapshotWithEdgeInsets(_ insets: UIEdgeInsets) -> UIImage? {
 		guard insets.top >= 0 && insets.left >= 0 && insets.bottom >= 0 && insets.right >= 0
-			else { return self.snapshotWithEdgeInsets(UIEdgeInsetsZero) }
+			else { return self.snapshotWithEdgeInsets(UIEdgeInsets.zero) }
 
 		let fullW = self.width
 		let fullH = self.height
-		let fullS = CGSizeMake(fullW, fullH)
+		let fullS = CGSize(width: fullW, height: fullH)
 
 		let clippedW = self.width - (insets.left + insets.right)
 		let clippedH = self.height - (insets.top + insets.bottom)
 		let clippedX = insets.left
 		let clippedY = insets.top
-		let clippedR = CGRectMake(clippedX, clippedY, clippedW, clippedH)
+		let clippedR = CGRect(x: clippedX, y: clippedY, width: clippedW, height: clippedH)
 
 		UIGraphicsBeginImageContextWithOptions(fullS, false, 0.0)
 		var fullImage: UIImage?
 		if let ctx = UIGraphicsGetCurrentContext() {
-			self.layer.renderInContext(ctx)
+			self.layer.render(in: ctx)
 			fullImage = UIGraphicsGetImageFromCurrentImageContext()
 		}
 		UIGraphicsEndImageContext()
@@ -315,7 +315,7 @@ public extension UIView {
 		UIGraphicsBeginImageContextWithOptions(clippedR.size, false, 0.0)
 		var clippedImage: UIImage?
 		if let _ = UIGraphicsGetCurrentContext() {
-			fullImage?.drawInRect(CGRectMake(-clippedX, -clippedY, fullW, fullH))
+			fullImage?.draw(in: CGRect(x: -clippedX, y: -clippedY, width: fullW, height: fullH))
 			clippedImage = UIGraphicsGetImageFromCurrentImageContext()
 		}
 		UIGraphicsEndImageContext()

@@ -41,4 +41,4 @@ public let TIMEINTERVAL_ANIMATION_DEFAULT = 0.25
 public let CGFLOAT_MAX = CGFloat(MAXFLOAT)
 
 /// CGSize极值快速访问
-public let CGSIZE_MAX  = CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
+public let CGSIZE_MAX  = CGSize(width: CGFLOAT_MAX, height: CGFLOAT_MAX)

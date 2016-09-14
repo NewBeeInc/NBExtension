@@ -10,9 +10,9 @@ import UIKit
 
 class ZBarPickerOverlayView: UIView {
 
-	private lazy var frameImgView: UIImageView = {
-		let imgView = UIImageView(frame: CGRectZero)
-		if let imgPath = NSBundle.mainBundle().pathForResource("zbarFrame", ofType: ".png") {
+	fileprivate lazy var frameImgView: UIImageView = {
+		let imgView = UIImageView(frame: CGRect.zero)
+		if let imgPath = Bundle.main.path(forResource: "zbarFrame", ofType: ".png") {
 			let img = UIImage(contentsOfFile: imgPath)
 			imgView.image = img
 		}
@@ -20,9 +20,9 @@ class ZBarPickerOverlayView: UIView {
 		return imgView
 	}()
 
-	private lazy var scannerLineImgView: UIImageView = {
-		let imgView = UIImageView(frame: CGRectZero)
-		if let imgPath = NSBundle.mainBundle().pathForResource("scanner", ofType: ".jpg") {
+	fileprivate lazy var scannerLineImgView: UIImageView = {
+		let imgView = UIImageView(frame: CGRect.zero)
+		if let imgPath = Bundle.main.path(forResource: "scanner", ofType: ".jpg") {
 			let img = UIImage(contentsOfFile: imgPath)
 			imgView.image = img
 		}
@@ -30,62 +30,62 @@ class ZBarPickerOverlayView: UIView {
 		return imgView
 	}()
 
-	var timer: NSTimer?
+	var timer: Timer?
 	var animDuration = 3.0
 
 	override init(frame: CGRect) {
 		super.init(frame: frame)
-		self.backgroundColor = UIColor.clearColor()
+		self.backgroundColor = UIColor.clear
 	}
 
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 	}
 
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
 		// 上部矩形+下部"凹"形
 		let irw = rect.width * 0.6
 		let irh = irw
 
-		let otl = CGPointZero
-		let otr = CGPointMake(rect.width, 0.0)
-		let olr = CGPointMake(rect.width, rect.height)
-		let oll = CGPointMake(0.0, rect.height)
+		let otl = CGPoint.zero
+		let otr = CGPoint(x: rect.width, y: 0.0)
+		let olr = CGPoint(x: rect.width, y: rect.height)
+		let oll = CGPoint(x: 0.0, y: rect.height)
 
-		let lta = CGPointMake(0.0, (rect.height - irh) * 0.5)
-		let rta = CGPointMake(rect.width, lta.y)
+		let lta = CGPoint(x: 0.0, y: (rect.height - irh) * 0.5)
+		let rta = CGPoint(x: rect.width, y: lta.y)
 
 		let trim = 0.1.cgFloat
 
-		let lba = CGPointMake(lta.x, lta.y - trim)
-		let rba = CGPointMake(rta.x, rta.y - trim)
+		let lba = CGPoint(x: lta.x, y: lta.y - trim)
+		let rba = CGPoint(x: rta.x, y: rta.y - trim)
 
-		let itl = CGPointMake((rect.width - irw) * 0.5 , (rect.height - irh) * 0.5 - trim)
-		let itr = CGPointMake(itl.x + irw, itl.y)
-		let ilr = CGPointMake(itr.x, itr.y + irh)
-		let ill = CGPointMake(itl.x, ilr.y)
+		let itl = CGPoint(x: (rect.width - irw) * 0.5 , y: (rect.height - irh) * 0.5 - trim)
+		let itr = CGPoint(x: itl.x + irw, y: itl.y)
+		let ilr = CGPoint(x: itr.x, y: itr.y + irh)
+		let ill = CGPoint(x: itl.x, y: ilr.y)
 
 
 		let tp = UIBezierPath()
-		tp.moveToPoint(otl)
-		tp.addLineToPoint(otr)
-		tp.addLineToPoint(rta)
-		tp.addLineToPoint(lta)
-		tp.closePath()
+		tp.move(to: otl)
+		tp.addLine(to: otr)
+		tp.addLine(to: rta)
+		tp.addLine(to: lta)
+		tp.close()
 		tp.lineWidth = 0.0
 		UIColor(white: 0.0, alpha: 0.8).setFill()
 		tp.fill()
 
 		let bp = UIBezierPath()
-		bp.moveToPoint(lba)
-		bp.addLineToPoint(itl)
-		bp.addLineToPoint(ill)
-		bp.addLineToPoint(ilr)
-		bp.addLineToPoint(itr)
-		bp.addLineToPoint(rba)
-		bp.addLineToPoint(olr)
-		bp.addLineToPoint(oll)
-		bp.closePath()
+		bp.move(to: lba)
+		bp.addLine(to: itl)
+		bp.addLine(to: ill)
+		bp.addLine(to: ilr)
+		bp.addLine(to: itr)
+		bp.addLine(to: rba)
+		bp.addLine(to: olr)
+		bp.addLine(to: oll)
+		bp.close()
 		bp.lineWidth = 0.0
 		bp.fill()
     }
@@ -105,17 +105,17 @@ class ZBarPickerOverlayView: UIView {
 
 	func playScanAnim() {
 		if self.timer == nil {
-			self.timer = NSTimer.scheduledTimerWithTimeInterval(animDuration, target: self, selector: #selector(self.playScanAnim), userInfo: nil, repeats: true)
+			self.timer = Timer.scheduledTimer(timeInterval: animDuration, target: self, selector: #selector(self.playScanAnim), userInfo: nil, repeats: true)
 		}
-		UIView.animateWithDuration(self.animDuration * 0.5, animations: {
+		UIView.animate(withDuration: self.animDuration * 0.5, animations: {
 			self.scannerLineImgView.maxY = self.frameImgView.maxY
-		}) { (finished) in
+		}, completion: { (finished) in
 			if finished {
-				UIView.animateWithDuration(self.animDuration * 0.5) {
+				UIView.animate(withDuration: self.animDuration * 0.5, animations: {
 					self.scannerLineImgView.y = self.frameImgView.y
-				}
+				}) 
 			}
-		}
+		}) 
 	}
 
 	func stopScanAnim() {

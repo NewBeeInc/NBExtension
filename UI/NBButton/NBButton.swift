@@ -15,45 +15,45 @@
 import UIKit
 
 @objc public enum LayoutType: Int {
-	case Normal
-	case LeftTitleRightImage
-	case TopTitleBottomImage
-	case TopImageBottomTitle
+	case normal
+	case leftTitleRightImage
+	case topTitleBottomImage
+	case topImageBottomTitle
 }
 
-public class NBButton: UIButton {
+open class NBButton: UIButton {
 
 	// MARK: stored property
 
 	/// size of title
-	private var ttlF = CGRectZero
+	fileprivate var ttlF = CGRect.zero
 	/// size of image
-	private var imgF = CGRectZero
+	fileprivate var imgF = CGRect.zero
 	/// layout type
-	public var layoutType = LayoutType.Normal {
+	open var layoutType = LayoutType.normal {
 		didSet { self.setNeedsLayout() }
 	}
 	/// border line width
-	public var borderWidth = 0.0 {
+	open var borderWidth = 0.0 {
 		didSet {
 			self.setNeedsDisplay()
 		}
 	}
 	/// border line color
-	public var borderColor = UIColor.blackColor() {
+	open var borderColor = UIColor.black {
 		didSet { self.setNeedsDisplay() }
 	}
 	/// fill color
-	public var fillColor = UIColor.clearColor() {
+	open var fillColor = UIColor.clear {
 		didSet { self.setNeedsDisplay() }
 	}
 
 	// MARK: computed property
 
 	/// animation images
-	public var animationImages: [UIImage]? {
+	open var animationImages: [UIImage]? {
 		set {
-			self.setImage(newValue?.first, forState: UIControlState.Normal)
+			self.setImage(newValue?.first, for: UIControlState())
 			self.imageView?.animationImages = newValue
 		}
 		get {
@@ -62,7 +62,7 @@ public class NBButton: UIButton {
 	}
 
 	/// animation duration
-	public var animationDuration: NSTimeInterval {
+	open var animationDuration: TimeInterval {
 		set {
 			self.imageView?.animationDuration = newValue
 		}
@@ -72,7 +72,7 @@ public class NBButton: UIButton {
 	}
 
 	/// animation repeat count
-	public var animationRepeatCount: Int {
+	open var animationRepeatCount: Int {
 		set {
 			self.imageView?.animationRepeatCount = newValue
 		}
@@ -90,27 +90,27 @@ public class NBButton: UIButton {
 	}
 
 	convenience init(layoutType: LayoutType) {
-		self.init(frame: CGRectZero)
+		self.init(frame: CGRect.zero)
 		self.layoutType = layoutType
 	}
 
-	public override func layoutSubviews() {
+	open override func layoutSubviews() {
 		super.layoutSubviews()
 		// 1. cal image bounds
 		if let img = self.currentImage {
-			imgF = CGRectMake(0.0, 0.0, img.size.width, img.size.height)
+			imgF = CGRect(x: 0.0, y: 0.0, width: img.size.width, height: img.size.height)
 		}
 		// 2. cal title bounds
-		if let ttl = self.currentTitle, font = self.titleLabel?.font {
-			ttlF = (ttl as NSString).boundingRectWithSize(CGSizeMake(CGFloat.max, CGFloat.max),
-			                                              options: NSStringDrawingOptions.UsesLineFragmentOrigin,
+		if let ttl = self.currentTitle, let font = self.titleLabel?.font {
+			ttlF = (ttl as NSString).boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude),
+			                                              options: NSStringDrawingOptions.usesLineFragmentOrigin,
 			                                              attributes: [NSFontAttributeName: font],
 			                                              context: nil)
 		}
 		// 3. layout subviews
 		switch layoutType {
 		// 3.1
-		case .LeftTitleRightImage:	// w = 120, h = 60
+		case .leftTitleRightImage:	// w = 120, h = 60
 			// 3.1.1 cal title frame
 			// default horizontal margin of title
 			let hTtlMrgDef = max((frame.width - imgF.width - ttlF.width) * 0.5, 0.0)
@@ -121,7 +121,7 @@ public class NBButton: UIButton {
 			let ttlY = contentEdgeInsets.top + titleEdgeInsets.top + vTtlMrgDef
 			let ttlW = max(min(frame.width - ttlX - contentEdgeInsets.right - titleEdgeInsets.right, ttlF.width), 0.0)
 			let ttlH = max(min(frame.height - ttlY - contentEdgeInsets.bottom - titleEdgeInsets.bottom, ttlF.height), 0.0)
-			let newTtlF = CGRectMake(ttlX, ttlY, ttlW, ttlH)
+			let newTtlF = CGRect(x: ttlX, y: ttlY, width: ttlW, height: ttlH)
 			// 3.1.2 cal image frame
 			// default vertical margin of image
 			let vImgMrgDef = (frame.height - imgF.height) * 0.5
@@ -130,13 +130,13 @@ public class NBButton: UIButton {
 			let imgY = contentEdgeInsets.top + imageEdgeInsets.top + vImgMrgDef
 			let imgW = max(min(frame.width - imgX - contentEdgeInsets.right - imageEdgeInsets.right, imgF.width), 0.0)
 			let imgH = max(min(frame.height - imgY - contentEdgeInsets.bottom - imageEdgeInsets.bottom, imgF.height), 0.0)
-			let newImgF = CGRectMake(imgX, imgY, imgW, imgH)
+			let newImgF = CGRect(x: imgX, y: imgY, width: imgW, height: imgH)
 			self.titleLabel?.frame = newTtlF
 			self.imageView?.frame = newImgF
 //			print("\noverall frame = \(frame)\ntitle frame = \(ttlF)\nimage frame = \(imgF)\ndefault title margin H = \(hTtlMrgDef)\ndefault title margi V = \(vTtlMrgDef)\ntitle frame = \(newTtlF)")
 			break
 		// 3.2
-		case .TopImageBottomTitle:
+		case .topImageBottomTitle:
 			// 3.2.1 cal image frame
 			// default horizontal margin of image
 			let hImgMrgDef = max((frame.width - imgF.width) * 0.5, 0.0)
@@ -147,7 +147,7 @@ public class NBButton: UIButton {
 			let imgY = contentEdgeInsets.top + imageEdgeInsets.top + vImgMrgDef
 			let imgW = max(min(frame.width - imgX - contentEdgeInsets.right - imageEdgeInsets.right, imgF.width), 0.0)
 			let imgH = max(min(frame.height - imgY - contentEdgeInsets.bottom - imageEdgeInsets.bottom, imgF.height), 0.0)
-			let newImgF = CGRectMake(imgX, imgY, imgW, imgH)
+			let newImgF = CGRect(x: imgX, y: imgY, width: imgW, height: imgH)
 			// 3.2.2 cal title frame
 			// default horizontal margin of title
 			let hTtlMrgDef = max((frame.width - ttlF.width) * 0.5, 0.0)
@@ -156,11 +156,11 @@ public class NBButton: UIButton {
 			let ttlY = contentEdgeInsets.top + titleEdgeInsets.top + vImgMrgDef + imgF.height
 			let ttlW = max(min(frame.width - ttlX - contentEdgeInsets.right - titleEdgeInsets.right, ttlF.width), 0.0)
 			let ttlH = max(min(frame.height - ttlY - contentEdgeInsets.bottom - titleEdgeInsets.bottom, ttlF.height), 0.0)
-			let newTtlF = CGRectMake(ttlX, ttlY, ttlW, ttlH)
+			let newTtlF = CGRect(x: ttlX, y: ttlY, width: ttlW, height: ttlH)
 			self.titleLabel?.frame = newTtlF
 			self.imageView?.frame = newImgF
 			break
-		case .TopTitleBottomImage:
+		case .topTitleBottomImage:
 			// 3.2.1 cal title frame
 			// default horizontal margin of title
 			let hTtlMrgDef = max((frame.width - ttlF.width) * 0.5, 0.0)
@@ -171,7 +171,7 @@ public class NBButton: UIButton {
 			let ttlY = contentEdgeInsets.top + titleEdgeInsets.top + vTtlMrgDef
 			let ttlW = max(min(frame.width - ttlX - contentEdgeInsets.right - titleEdgeInsets.right, ttlF.width), 0.0)
 			let ttlH = max(min(frame.height - ttlY - contentEdgeInsets.bottom - titleEdgeInsets.bottom, ttlF.height), 0.0)
-			let newTtlF = CGRectMake(ttlX, ttlY, ttlW, ttlH)
+			let newTtlF = CGRect(x: ttlX, y: ttlY, width: ttlW, height: ttlH)
 			// 3.2.2 cal image frame
 			// default horizontal margin of image
 			let hImgMrgDef = max((frame.width - imgF.width) * 0.5, 0.0)
@@ -180,7 +180,7 @@ public class NBButton: UIButton {
 			let imgY = contentEdgeInsets.top + imageEdgeInsets.top + vTtlMrgDef + ttlF.height
 			let imgW = max(min(frame.width - imgX - contentEdgeInsets.right - imageEdgeInsets.right, imgF.width), 0.0)
 			let imgH = max(min(frame.height - imgY - contentEdgeInsets.bottom - imageEdgeInsets.bottom, imgF.height), 0.0)
-			let newImgF = CGRectMake(imgX, imgY, imgW, imgH)
+			let newImgF = CGRect(x: imgX, y: imgY, width: imgW, height: imgH)
 			self.titleLabel?.frame = newTtlF
 			self.imageView?.frame = newImgF
 			break
@@ -193,8 +193,8 @@ public class NBButton: UIButton {
 // MARK: -
 extension NBButton {
 
-	public override func drawRect(rect: CGRect) {
-		super.drawRect(rect)
+	open override func draw(_ rect: CGRect) {
+		super.draw(rect)
 		if borderWidth > 0 {
 		dog("\(self.layer.cornerRadius)")
 			// 1. draw border
@@ -204,7 +204,7 @@ extension NBButton {
 			let bCR = max(self.layer.cornerRadius - borderWidth.cgFloat * 0.5, 0.0)
 			let bX = borderWidth.cgFloat * 0.5
 			let bY = bX
-			let borderP = UIBezierPath(roundedRect: CGRectMake(bX, bY, bW, bH), cornerRadius: bCR)
+			let borderP = UIBezierPath(roundedRect: CGRect(x: bX, y: bY, width: bW, height: bH), cornerRadius: bCR)
 			borderP.lineWidth = borderWidth.cgFloat
 			borderColor.setStroke()
 			borderP.addClip()
@@ -215,8 +215,8 @@ extension NBButton {
 			let fX = borderWidth.cgFloat
 			let fY = fX
 			let fCR = max(self.layer.cornerRadius - borderWidth.cgFloat, 0.0)
-			let fP = UIBezierPath(roundedRect: CGRectMake(fX, fY, fW, fH), cornerRadius: fCR)
-			self.backgroundColor = UIColor.clearColor()
+			let fP = UIBezierPath(roundedRect: CGRect(x: fX, y: fY, width: fW, height: fH), cornerRadius: fCR)
+			self.backgroundColor = UIColor.clear
 			fillColor.setFill()
 			fP.fill()
 		}
@@ -231,6 +231,6 @@ extension NBButton {
 	}
 
 	public func isAnimating() -> Bool {
-		return self.imageView?.isAnimating() ?? false
+		return self.imageView?.isAnimating ?? false
 	}
 }

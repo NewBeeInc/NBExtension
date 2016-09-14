@@ -17,14 +17,14 @@ public extension UINavigationController {
 
 	- parameter hidden: 隐藏/显示
 	*/
-	public func setBottomSeparatorHidden(hidden: Bool) {
+	public func setBottomSeparatorHidden(_ hidden: Bool) {
 		for naviBarSubview in self.navigationBar.subviews {
-			if (naviBarSubview.isKindOfClass(NSClassFromString("_UINavigationBarBackground")!)) {
+			if (naviBarSubview.isKind(of: NSClassFromString("_UINavigationBarBackground")!)) {
 				let navigationBarBackground: UIView = naviBarSubview
 				for navigationBarBackgroundSubview in navigationBarBackground.subviews {
-					if (navigationBarBackgroundSubview.isKindOfClass(UIImageView)) {
+					if (navigationBarBackgroundSubview.isKind(of: UIImageView.self)) {
 						let imageView: UIImageView = navigationBarBackgroundSubview as! UIImageView
-						imageView.hidden = hidden
+						imageView.isHidden = hidden
 					}
 				}
 			}
@@ -36,9 +36,9 @@ public extension UINavigationController {
 
 	- parameter color: 颜色
 	*/
-	public func setBarBackgroundColor(color: UIColor) {
+	public func setBarBackgroundColor(_ color: UIColor) {
 		for naviBarSubview in self.navigationBar.subviews {
-			if (naviBarSubview.isKindOfClass(NSClassFromString("_UINavigationBarBackground")!)) {
+			if (naviBarSubview.isKind(of: NSClassFromString("_UINavigationBarBackground")!)) {
 				let navigationBarBackground: UIView = naviBarSubview
 				navigationBarBackground.backgroundColor = color
 			}
@@ -59,9 +59,9 @@ public extension UINavigationController {
 	//		}
 	//	}
 
-	@available(*, unavailable, message="don't call this method directly")
+	@available(*, unavailable, message: "don't call this method directly")
 	internal func pop() {
-		self.popViewControllerAnimated(true)
+		self.popViewController(animated: true)
 	}
 	
 }

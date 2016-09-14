@@ -25,9 +25,9 @@ class LoadMoreControl: UIControl {
 
 	// MARK: Interface Elements
 
-	private lazy var button: NBButton = {
-		let btn = NBButton(layoutType: LayoutType.Normal)
-		btn.setImage(UIImage(named: "loading_grey_v2_00000"), forState: UIControlState.Normal)
+	fileprivate lazy var button: NBButton = {
+		let btn = NBButton(layoutType: LayoutType.normal)
+		btn.setImage(UIImage(named: "loading_grey_v2_00000"), for: UIControlState())
 		var images = [UIImage]()
 		for i in 0 ..< 29 {
 			// loading_grey_v2_00000
@@ -64,7 +64,7 @@ class LoadMoreControl: UIControl {
 	override func didMoveToSuperview() {
 		// once added to superview...
 		// 1. make sure superview is class of UITableView
-		guard let superview = superview where superview.isKindOfClass(UITableView.self)
+		guard let superview = superview , superview.isKind(of: UITableView.self)
 			else { return }
 		let tableView = superview as! UITableView
 		// 2. check out superview (UITableView) content height
@@ -84,9 +84,9 @@ class LoadMoreControl: UIControl {
 		}
 		self.width = SCREEN_WIDTH
 		self.height = 44.0.cgFloat
-		superview.addObserver(self, forKeyPath: KVOKeyPath, options: NSKeyValueObservingOptions.New, context: &UIScrollViewContentOffsetContext)
-		superview.addObserver(self, forKeyPath: KVOKeyPathContentSize, options: NSKeyValueObservingOptions.New, context: &UIScrollViewContentSizeContext)
-		(superview as! UITableView).addObserver(self, forKeyPath: KVOGesture, options: NSKeyValueObservingOptions.New, context: &UIPanGestureRecognizerStateContext)
+		superview.addObserver(self, forKeyPath: KVOKeyPath, options: NSKeyValueObservingOptions.new, context: &UIScrollViewContentOffsetContext)
+		superview.addObserver(self, forKeyPath: KVOKeyPathContentSize, options: NSKeyValueObservingOptions.new, context: &UIScrollViewContentSizeContext)
+		(superview as! UITableView).addObserver(self, forKeyPath: KVOGesture, options: NSKeyValueObservingOptions.new, context: &UIPanGestureRecognizerStateContext)
 	}
 
 	override func layoutSubviews() {
@@ -99,11 +99,11 @@ class LoadMoreControl: UIControl {
 		dog(self.button)
 	}
 
-	override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-		switch context {
-		case &UIScrollViewContentOffsetContext:
+	override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+		switch context?.load(as: Int.self) {
+		case UIScrollViewContentOffsetContext?:
 			guard let superview = superview
-				where superview.isKindOfClass(UITableView.self) && !self.isLoadingMore
+				, superview.isKind(of: UITableView.self) && !self.isLoadingMore
 			else {
 				return
 			}
@@ -117,9 +117,9 @@ class LoadMoreControl: UIControl {
 //				self.button.setTitle("松开加载", forState: UIControlState.Normal)
 			}
 			break
-		case &UIScrollViewContentSizeContext:
+		case UIScrollViewContentSizeContext?:
 			guard let superview = superview
-				where superview.isKindOfClass(UITableView.self)
+				, superview.isKind(of: UITableView.self)
 			else {
 				return
 			}
@@ -127,22 +127,22 @@ class LoadMoreControl: UIControl {
 			let superviewVisibleHeight = (superview as! UITableView).height - ((superview as! UITableView).contentInset.top + (superview as! UITableView).contentInset.bottom)
 
 			if contentSizeHeight < superviewVisibleHeight {
-				(superview as! UIScrollView).contentSize = CGSizeMake(SCREEN_WIDTH, superviewVisibleHeight)
+				(superview as! UIScrollView).contentSize = CGSize(width: SCREEN_WIDTH, height: superviewVisibleHeight)
 				self.y = superviewVisibleHeight
 			} else {
 				self.y = contentSizeHeight
 			}
 			break
-		case &UIPanGestureRecognizerStateContext:
-			guard let object = object, superview = superview, state = change?["new"] as? Int
-				where object.isKindOfClass(UITableView.self) && superview.isKindOfClass(UITableView.self)
+		case UIPanGestureRecognizerStateContext?:
+			guard let object = object, let superview = superview, let state = change?[NSKeyValueChangeKey.newKey] as? Int
+				, (object as AnyObject).isKind(of: UITableView.self) && superview.isKind(of: UITableView.self)
 			else {
 				return
 			}
 			// 1 - began
 			// 2 - changed
 			// 3 - ended
-			if state == UIGestureRecognizerState.Ended.rawValue {
+			if state == UIGestureRecognizerState.ended.rawValue {
 				if superview.height - ((superview as! UITableView).contentSize.height - (superview as! UITableView).contentOffset.y) > 65.0 {
 					beginLoadingMore()
 				}
@@ -160,27 +160,27 @@ extension LoadMoreControl {
 	func beginLoadingMore() {
 
 		// 0. 如果当前正在加载, 则直接返回
-		guard let superview = superview where !isLoadingMore && superview.isKindOfClass(UITableView.self)
+		guard let superview = superview , !isLoadingMore && superview.isKind(of: UITableView.self)
 			else { return }
 		let tableView = superview as! UITableView
 		// 1. 开始加载旧的评价
 		self.isLoadingMore = true
 
 		if tableView.contentOffset.y != self.height {
-			UIView.animateWithDuration(TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
+			UIView.animate(withDuration: TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
 				var originalInset = (superview as! UITableView).contentInset
 				originalInset.bottom += self.height
 				tableView.contentInset = originalInset
 				let contentH = tableView.contentSize.height
 				let tableViewH = tableView.height
-				tableView.setContentOffset(CGPointMake(0, contentH + self.height - tableViewH), animated: false)
+				tableView.setContentOffset(CGPoint(x: 0, y: contentH + self.height - tableViewH), animated: false)
 			})
 		}
 
 
 		self.button.startAnimating()
 
-		self.sendActionsForControlEvents(UIControlEvents.ValueChanged)
+		self.sendActions(for: UIControlEvents.valueChanged)
 
 		self.allowEnding = false
 		delay(minRefreshingTimeInterval) { () -> () in
@@ -198,10 +198,10 @@ extension LoadMoreControl {
 		}
 	}
 
-	private func endLoadingAnimation() {
+	fileprivate func endLoadingAnimation() {
 		if let superview = self.superview {
-			if superview.isKindOfClass(UIScrollView.self) {
-				UIView.animateWithDuration(TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
+			if superview.isKind(of: UIScrollView.self) {
+				UIView.animate(withDuration: TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
 					var originalInset = (superview as! UITableView).contentInset
 					originalInset.bottom -= self.height
 					(superview as! UIScrollView).contentInset = originalInset

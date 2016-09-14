@@ -18,13 +18,13 @@ import Foundation
 - parameter file:      文件名称
 - parameter line:      代码行号
 */
-public func dog(anyObject: Any?, function: String = #function, file: String = #file, line: Int = #line) {
+public func dog(_ anyObject: Any?, function: String = #function, file: String = #file, line: Int = #line) {
 	#if DEBUG
-		let dateFormat		  = NSDateFormatter()
+		let dateFormat		  = DateFormatter()
 		dateFormat.dateFormat = "HH:mm:ss.SSS"
 
 		let date = NSDate()
-		let time = dateFormat.stringFromDate(date)
+		let time = dateFormat.string(from: date as Date)
 
 		print("[\(time)] <\((file as NSString).lastPathComponent)> \(function) LINE(\(line)): \(anyObject)")
 	#endif
@@ -37,7 +37,7 @@ public func dog(anyObject: Any?, function: String = #function, file: String = #f
 
 - returns: 去除重复元素后的新数组
 */
-func uniq<S: SequenceType, T: Hashable where S.Generator.Element == T>(source: S) -> [T] {
+func uniq<S: Sequence, T: Hashable>(_ source: S) -> [T] where S.Iterator.Element == T {
 	var buffer = [T]()
 	var added = Set<T>()
 	for elem in source {

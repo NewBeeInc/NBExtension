@@ -17,20 +17,20 @@ public extension UILabel {
 
 	- parameter insets: 距边缘距离
 	*/
-	public func sizeToFitWithTextSizeLimits(limits: CGSize, andInsets insets: UIEdgeInsets) {
+	public func sizeToFitWithTextSizeLimits(_ limits: CGSize, andInsets insets: UIEdgeInsets) {
 		// -1. 文本居中
-		self.textAlignment = .Center
+		self.textAlignment = .center
 		// 0. 提取各边距
 		let t = insets.top, b = insets.bottom, l = insets.left, r = insets.right
 		guard let text = self.text else {
 			// 如果文本为nil, 则宽度为l+r, 高度为t+b
-			self.size = CGSizeMake(l+r, t+b)
+			self.size = CGSize(width: l+r, height: t+b)
 			return
 		}
 		// 1. 计算文本的尺寸
 		let rect = text.boundingRectWith(limits, font: self.font)
 		let w = rect.width + l + r
 		let h = rect.height + t + b
-		self.size = CGSizeMake(w, h)
+		self.size = CGSize(width: w, height: h)
 	}
 }

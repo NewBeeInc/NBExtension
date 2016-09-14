@@ -9,14 +9,14 @@
 import UIKit
 
 private let coverColor = UIColor(white: 1.0, alpha: 0.8)
-private let embedColor = UIColor.clearColor()
+private let embedColor = UIColor.clear
 
 // MARK: - Class Definition
 class PromptView: FocusView {
 
-	enum Type: Int {
-		case Progress = 0
-		case Failure
+	enum PromptType: Int {
+		case progress = 0
+		case failure
 	}
 
 	// MARK: Interface Elements
@@ -41,7 +41,7 @@ class PromptView: FocusView {
 	}
 	@IBOutlet weak var promptLabel: UILabel! {
 		didSet {
-			promptLabel.font = UIFont.systemFontOfSize(13.5)
+			promptLabel.font = UIFont.systemFont(ofSize: 13.5)
 			promptLabel.textColor = UIColor.ultraLightGrayColor()
 		}
 	}
@@ -66,12 +66,12 @@ extension PromptView {
 		return promptView
 	}
     
-    @available(*, deprecated, message="use - noDataView(_:) instead")
+    @available(*, deprecated, message: "use - noDataView(_:) instead")
 	class func noDataView() -> PromptView {
 		return self.noDataView("暂无数据，请打开定位/检查网络并刷新")
 	}
     
-    class func noDataView(withText: String) -> PromptView {
+    class func noDataView(_ withText: String) -> PromptView {
         let promptView = PromptView.promptView()
         promptView.animationImageView.image = UIImage(named: "nodata")
         promptView.promptLabel.text = withText
@@ -82,16 +82,16 @@ extension PromptView {
 	///
 	/// - parameter withText: 文本;
 	/// - returns:	返回PromptView实例
-	class func failureView(withText: String) -> PromptView {
+	class func failureView(_ withText: String) -> PromptView {
 		let promptView = PromptView.promptView()
 		promptView.animationImageView.image = UIImage(named: "nodata")
 		promptView.promptLabel.text = withText
 		return promptView
 	}
 
-	func showOn(view: UIView) {
+	func showOn(_ view: UIView) {
 		view.addSubview(self)
-		self.center = CGPointMake(view.width * 0.5, view.height * 0.5)
+		self.center = CGPoint(x: view.width * 0.5, y: view.height * 0.5)
 	}
 
 }
@@ -100,13 +100,13 @@ extension PromptView {
 extension PromptView {
 
 	class func promptView() -> PromptView {
-		return BUNDLE_MAIN.loadNibNamed("PromptView", owner: nil, options: nil).first as! PromptView
+		return BUNDLE_MAIN.loadNibNamed("PromptView", owner: nil, options: nil)!.first as! PromptView
 	}
 
-	private class func isShowing() -> Bool {
-		if let window = UIApplication.sharedApplication().keyWindow {
+	fileprivate class func isShowing() -> Bool {
+		if let window = UIApplication.shared.keyWindow {
 			for subview in window.subviews {
-				if subview.isKindOfClass(PromptView.self) {
+				if subview.isKind(of: PromptView.self) {
 					return true
 				}
 			}
@@ -114,11 +114,11 @@ extension PromptView {
 		return false
 	}
 
-	private class func isShowingProgressIn(view: UIView?) -> Bool {
+	fileprivate class func isShowingProgressIn(_ view: UIView?) -> Bool {
 		if let targetView = view {
 			for subview in targetView.subviews {
-				if subview.isKindOfClass(PromptView.self) {
-					if subview.tag == Type.Progress.rawValue {
+				if subview.isKind(of: PromptView.self) {
+					if subview.tag == PromptType.progress.rawValue {
 						return true
 					}
 				}
@@ -127,11 +127,11 @@ extension PromptView {
 		return false
 	}
 
-	private class func isShowingFailureIn(view: UIView?) -> Bool {
+	fileprivate class func isShowingFailureIn(_ view: UIView?) -> Bool {
 		if let targetView = view {
 			for subview in targetView.subviews {
-				if subview.isKindOfClass(PromptView.self) {
-					if subview.tag == Type.Failure.rawValue {
+				if subview.isKind(of: PromptView.self) {
+					if subview.tag == PromptType.failure.rawValue {
 						return true
 					}
 				}
@@ -147,19 +147,19 @@ extension PromptView {
 	class func show() {
 		if !self.isShowing() {
 			let promptView = PromptView.promptView()
-			if let window = UIApplication.sharedApplication().keyWindow {
+			if let window = UIApplication.shared.keyWindow {
 				promptView.frame = window.bounds
 				window.addSubview(promptView)
 				promptView.animationImageView.startAnimating()
 				if #available(iOS 8.0, *) {
-					promptView.blurView.effect = UIBlurEffect(style: .Dark)
+					promptView.blurView.effect = UIBlurEffect(style: .dark)
 				} else {
 					promptView.backgroundColor = coverColor
 				}
 				promptView.promptLabel.text = "正在加载..."
-				UIView.animateWithDuration(TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
+				UIView.animate(withDuration: TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
 					if #available(iOS 8.0, *) {
-						promptView.blurView.effect = UIBlurEffect(style: .Dark)
+						promptView.blurView.effect = UIBlurEffect(style: .dark)
 					} else {
 						promptView.alpha = 1.0
 					}
@@ -170,10 +170,10 @@ extension PromptView {
 
 	class func hide() {
 		if self.isShowing() {
-			if let window = UIApplication.sharedApplication().keyWindow {
+			if let window = UIApplication.shared.keyWindow {
 				for subview in window.subviews {
-					if subview.isKindOfClass(PromptView.self) {
-						UIView.animateWithDuration(TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
+					if subview.isKind(of: PromptView.self) {
+						UIView.animate(withDuration: TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
 							if #available(iOS 8.0, *) {
 								(subview as! PromptView).blurView.effect = nil
 							} else {

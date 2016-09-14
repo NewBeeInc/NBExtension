@@ -9,52 +9,52 @@
 import UIKit
 
 @objc public enum NBQRCodeScanViewControllerStyle: Int {
-	case FullScreen, Custom
+	case fullScreen, custom
 }
 
-public class NBQRCodeScanViewController: ZBarReaderViewController {
+open class NBQRCodeScanViewController: ZBarReaderViewController {
 
-	private var style: NBQRCodeScanViewControllerStyle = .FullScreen
+	fileprivate var style: NBQRCodeScanViewControllerStyle = .fullScreen
 
 	convenience init(style: NBQRCodeScanViewControllerStyle) {
 		self.init()
 		self.style = style
 		self.showsZBarControls = false
 		switch style {
-		case .FullScreen:
+		case .fullScreen:
 			break
-		case .Custom:
-			self.cameraOverlayView = ZBarPickerOverlayView(frame: UIScreen.mainScreen().bounds)
+		case .custom:
+			self.cameraOverlayView = ZBarPickerOverlayView(frame: UIScreen.main.bounds)
 			break
 		}
 	}
 
-    override public func viewDidLoad() {
+    override open func viewDidLoad() {
         super.viewDidLoad()
 
     }
 
-	public override func viewDidAppear(animated: Bool) {
+	open override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		switch self.style {
-		case .Custom:
+		case .custom:
 			(self.cameraOverlayView as! ZBarPickerOverlayView).playScanAnim()
 		default:
 			break
 		}
 	}
 
-	public override func viewWillDisappear(animated: Bool) {
+	open override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		switch self.style {
-		case .Custom:
+		case .custom:
 			(self.cameraOverlayView as! ZBarPickerOverlayView).stopScanAnim()
 		default:
 			break
 		}
 	}
 
-	public class func extractResult(info: [String : AnyObject]) -> String? {
+	open class func extractResult(_ info: [String : AnyObject]) -> String? {
 		guard let results = info[ZBarReaderControllerResults] as? ZBarSymbolSet
 			else { return nil }
 		var symbolFound : ZBarSymbol?
@@ -66,8 +66,8 @@ public class NBQRCodeScanViewController: ZBarReaderViewController {
 	}
 }
 
-extension ZBarSymbolSet: SequenceType {
-	public func generate() -> NSFastGenerator {
-		return NSFastGenerator(self)
+extension ZBarSymbolSet: Sequence {
+	public func makeIterator() -> NSFastEnumerationIterator {
+		return NSFastEnumerationIterator(self)
 	}
 }

@@ -19,7 +19,7 @@ public extension UIViewController {
 	- parameter viewController: 子控制器
 	- parameter rect:           子控制器的视图尺寸位置
 	*/
-	public func popUpViewController(viewController: UIViewController, inRect rect: CGRect) {
+	public func popUpViewController(_ viewController: UIViewController, inRect rect: CGRect) {
 		// 加载子控制器
 		self.addChildViewController(viewController)
 		// 设置子控制器视图尺寸和位置
@@ -27,11 +27,11 @@ public extension UIViewController {
 		// 手动触发子控制器的view life circle
 		viewController.beginAppearanceTransition(true, animated: false)
 		viewController.view.alpha = 0.0
-		UIApplication.sharedApplication().keyWindow?.addSubview(viewController.view)
-		viewController.view.transform = CGAffineTransformMakeScale(1.3, 1.3)
-		UIView.transitionWithView(viewController.view, duration: TIMEINTERVAL_ANIMATION_DEFAULT, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+		UIApplication.shared.keyWindow?.addSubview(viewController.view)
+		viewController.view.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
+		UIView.transition(with: viewController.view, duration: TIMEINTERVAL_ANIMATION_DEFAULT, options: UIViewAnimationOptions(), animations: { () -> Void in
 			viewController.view.alpha = 1.0
-			viewController.view.transform = CGAffineTransformIdentity
+			viewController.view.transform = CGAffineTransform.identity
 			}) { (finished) -> Void in
 				viewController.endAppearanceTransition()
 		}
@@ -42,12 +42,12 @@ public extension UIViewController {
 	从父控制器的视图中消失
 	*/
 	public func popOff() {
-		if self.parentViewController == nil { return }
+		if self.parent == nil { return }
 
 		self.beginAppearanceTransition(false, animated: false)
-		UIView.transitionWithView(self.view, duration: TIMEINTERVAL_ANIMATION_DEFAULT, options: UIViewAnimationOptions.CurveEaseInOut, animations: { () -> Void in
+		UIView.transition(with: self.view, duration: TIMEINTERVAL_ANIMATION_DEFAULT, options: UIViewAnimationOptions(), animations: { () -> Void in
 			self.view.alpha = 0.0
-			self.view.transform = CGAffineTransformScale(self.view.transform, 1.3, 1.3)
+			self.view.transform = self.view.transform.scaledBy(x: 1.3, y: 1.3)
 			}) { (finished) -> Void in
 				self.view.removeFromSuperview()
 				self.endAppearanceTransition()
@@ -55,12 +55,12 @@ public extension UIViewController {
 		}
 	}
 
-	@available(*, unavailable, message="don't call this method directly")
+	@available(*, unavailable, message: "don't call this method directly")
 	public func dismiss() {
 		if self.navigationController == nil {
-			self.dismissViewControllerAnimated(true, completion: nil)
+			self.dismiss(animated: true, completion: nil)
 		} else {
-			self.navigationController!.dismissViewControllerAnimated(true, completion: nil)
+			self.navigationController!.dismiss(animated: true, completion: nil)
 		}
 	}
 

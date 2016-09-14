@@ -25,9 +25,9 @@ class RefreshControl: UIControl {
 
 	// MARK: Interface Elements
 
-	private lazy var button: NBButton = {
-		let btn = NBButton(layoutType: LayoutType.Normal)
-		btn.setImage(UIImage(named: "loading_grey_v2_00000"), forState: UIControlState.Normal)
+	fileprivate lazy var button: NBButton = {
+		let btn = NBButton(layoutType: LayoutType.normal)
+		btn.setImage(UIImage(named: "loading_grey_v2_00000"), for: UIControlState())
 		var images = [UIImage]()
 		for i in 0 ..< 29 {
 			// loading_grey_v2_00000
@@ -63,15 +63,15 @@ class RefreshControl: UIControl {
 
 	// 已经被添加至新的父控件上, 监听新父控件的contentOffset
 	override func didMoveToSuperview() {
-		guard let superview = superview where superview.isKindOfClass(UITableView.self)
+		guard let superview = superview , superview.isKind(of: UITableView.self)
 			else { return }
 		let tableView = superview as! UITableView
 		self.height = 44.0.cgFloat
         self.x    = CGFloat(0.0)
         self.maxY = CGFloat(0.0)
 		self.width = SCREEN_WIDTH
-		tableView.addObserver(self, forKeyPath: KVOKeyPath, options: NSKeyValueObservingOptions.New, context: &UIScrollViewContentOffsetContext)
-		tableView.addObserver(self, forKeyPath: KVOGesture, options: .New, context: &UIPanGestureRecognizerStateContext)
+		tableView.addObserver(self, forKeyPath: KVOKeyPath, options: NSKeyValueObservingOptions.new, context: &UIScrollViewContentOffsetContext)
+		tableView.addObserver(self, forKeyPath: KVOGesture, options: .new, context: &UIPanGestureRecognizerStateContext)
 	}
 
 	override func layoutSubviews() {
@@ -83,18 +83,18 @@ class RefreshControl: UIControl {
 		self.button.y = 0.0
 	}
 
-	override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-		guard let keyPath = keyPath, object = object
-			where object.isKindOfClass(UITableView.self)
+	override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+		guard let keyPath = keyPath, let object = object
+			, (object as AnyObject).isKind(of: UITableView.self)
 			else {
 				return
 		}
 		let tableView = object as! UITableView
 
-		switch context {
-		case &UIScrollViewContentOffsetContext:
-			if let value = tableView.valueForKey(keyPath) as? NSValue {
-				let contentOffset = value.CGPointValue()
+		switch context?.load(as: Int.self) {
+		case UIScrollViewContentOffsetContext?:
+			if let value = tableView.value(forKey: keyPath) as? NSValue {
+				let contentOffset = value.cgPointValue
 				if !self.isRefreshing {
 					self.alpha = -(contentOffset.y + tableView.contentInset.top) / self.height
 				}
@@ -107,13 +107,13 @@ class RefreshControl: UIControl {
 			}
 			break
 
-		case &UIPanGestureRecognizerStateContext:
-			guard let state = change?["new"] as? Int
+		case UIPanGestureRecognizerStateContext?:
+			guard let state = change?[NSKeyValueChangeKey.newKey] as? Int
 				else { return }
 			// 1 - began
 			// 2 - changed
 			// 3 - ended
-			if state == UIGestureRecognizerState.Ended.rawValue {
+			if state == UIGestureRecognizerState.ended.rawValue {
 				if tableView.contentOffset.y + tableView.contentInset.top < -self.height {
 					beginRefreshing()
 				}
@@ -133,7 +133,7 @@ extension RefreshControl {
 		dog(self.isRefreshing)
 		// 如果当前正在刷新, 则直接返回
 		guard let superview = superview
-			where !self.isRefreshing && superview.isKindOfClass(UITableView.self)
+			, !self.isRefreshing && superview.isKind(of: UITableView.self)
 		else {
 			return
 		}
@@ -141,19 +141,19 @@ extension RefreshControl {
 		self.isRefreshing = true
 		self.alpha = 1.0
 
-		UIView.animateWithDuration(TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
+		UIView.animate(withDuration: TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
 		dog("begin=" + NSStringFromUIEdgeInsets((superview as! UITableView).contentInset))
 			var originalInset = (superview as! UITableView).contentInset
 			originalInset.top += self.height
 			(superview as! UITableView).contentInset = originalInset
 		dog("begin=" + NSStringFromUIEdgeInsets((superview as! UITableView).contentInset))
-			(superview as! UITableView).setContentOffset(CGPointMake(0, -self.height), animated: false)
+			(superview as! UITableView).setContentOffset(CGPoint(x: 0, y: -self.height), animated: false)
 
 			})
 
 		self.button.startAnimating()
 
-		self.sendActionsForControlEvents(UIControlEvents.ValueChanged)
+		self.sendActions(for: UIControlEvents.valueChanged)
 
 		self.allowEnding = false
 		delay(minRefreshingTimeInterval) { () -> () in
@@ -174,12 +174,12 @@ extension RefreshControl {
 		}
 	}
 
-	private func endRefreshingAnimation() {
+	fileprivate func endRefreshingAnimation() {
 		if let superview = self.superview {
-			if superview.isKindOfClass(UIScrollView.self) {
+			if superview.isKind(of: UIScrollView.self) {
 
-				UIView.animateWithDuration(TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
-					(superview as! UITableView).setContentOffset(CGPointMake(0, 0), animated: false)
+				UIView.animate(withDuration: TIMEINTERVAL_ANIMATION_DEFAULT, animations: { () -> Void in
+					(superview as! UITableView).setContentOffset(CGPoint(x: 0, y: 0), animated: false)
 				dog("end=" + NSStringFromUIEdgeInsets((superview as! UITableView).contentInset))
 					var originalInset = (superview as! UITableView).contentInset
 					originalInset.top -= self.height

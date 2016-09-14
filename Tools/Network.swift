@@ -23,9 +23,9 @@ class Network: NSObject {
 
 	- parameter completion: 回调, 返回网络是否可用
 	*/
-	func checkReachable(completion: ((Bool) -> Void)?) {
+	func checkReachable(_ completion: ((Bool) -> Void)?) {
 		delay(0.1) {
-			completion?(AFNetworkReachabilityManager.sharedManager().reachable)
+			completion?(AFNetworkReachabilityManager.shared().isReachable)
 		}
 	}
 
@@ -38,7 +38,7 @@ class Network: NSObject {
 	- parameter success:    成功回调
 	- parameter failure:    失败回调
 	*/
-	internal func get(URL URL: String, parameters: [String: AnyObject]!, success: (response: NSHTTPURLResponse?, json: JSON) -> Void, failure: () -> Void) {
+	internal func get(URL: String, parameters: [String: AnyObject]!, success: @escaping (_ response: HTTPURLResponse?, _ json: JSON) -> Void, failure: @escaping () -> Void) {
 
 		// 检查网络
 		Network.manager.checkReachable { (reachable) in
@@ -48,9 +48,9 @@ class Network: NSObject {
 //			}
 
 			let manager = AFHTTPRequestOperationManager()
-			manager.GET(URL, parameters: parameters, success: { (operation, jsonObject) -> Void in
+			manager.get(URL, parameters: parameters, success: { (operation, jsonObject) -> Void in
 			dog("SUCCESS: \(URL)")
-				success(response: operation.response, json: JSON(jsonObject))
+				success(operation?.response, JSON(jsonObject))
 				}, failure: { (operation, error) -> Void in
 					failure()
 			})
@@ -65,7 +65,7 @@ class Network: NSObject {
 	- parameter success:    成功回调
 	- parameter failure:    失败回调
 	*/
-	internal func post(URL URL: String, parameters: [String: AnyObject]!, success: (response: NSHTTPURLResponse?, json: JSON) -> Void, failure: (AFHTTPRequestOperation?) -> Void) {
+	internal func post(URL: String, parameters: [String: AnyObject]!, success: @escaping (_ response: HTTPURLResponse?, _ json: JSON) -> Void, failure: @escaping (AFHTTPRequestOperation?) -> Void) {
 
 		// 检查网络
 		Network.manager.checkReachable { (reachable) in
@@ -74,9 +74,9 @@ class Network: NSObject {
 //				return
 //			}
 			let manager = AFHTTPRequestOperationManager()
-			manager.POST(URL, parameters: parameters, success: { (operation, jsonObject) -> Void in
+			manager.post(URL, parameters: parameters, success: { (operation, jsonObject) -> Void in
 			dog("SUCCESS: \(URL)")
-				success(response: operation.response, json: JSON(jsonObject))
+				success(operation?.response, JSON(jsonObject))
 				}, failure: { (operation, error) -> Void in
 					failure(operation)
 			})
@@ -91,7 +91,7 @@ class Network: NSObject {
 	- parameter success:    成功回调
 	- parameter failure:    失败回调
 	*/
-	internal func put(URL URL: String, parameters: [String: AnyObject]!, success: (response: NSHTTPURLResponse?, json: JSON) -> Void, failure: () -> Void) {
+	internal func put(URL: String, parameters: [String: AnyObject]!, success: @escaping (_ response: HTTPURLResponse?, _ json: JSON) -> Void, failure: @escaping () -> Void) {
 
 		// 检查网络
 		Network.manager.checkReachable { (reachable) in
@@ -100,9 +100,9 @@ class Network: NSObject {
 				return
 			}
 			let manager = AFHTTPRequestOperationManager()
-			manager.PUT(URL, parameters: parameters, success: { (operation, jsonObject) -> Void in
+			manager.put(URL, parameters: parameters, success: { (operation, jsonObject) -> Void in
 			dog("SUCCESS: \(URL)")
-				success(response: operation.response, json: JSON(jsonObject))
+				success(operation?.response, JSON(jsonObject))
 				}, failure: { (operation, error) -> Void in
 					failure()
 			})
@@ -119,7 +119,7 @@ class Network: NSObject {
 	- parameter success:    成功回调
 	- parameter failure:    失败回调
 	*/
-	internal func put(URL: String, parameters: [String: AnyObject]!, data: NSData?, progress: (Double) -> Void, success: (Dictionary<String, AnyObject>) -> Void, failure: () -> Void) {
+	internal func put(_ URL: String, parameters: [String: AnyObject]!, data: Data?, progress: (Double) -> Void, success: @escaping (Dictionary<String, AnyObject>) -> Void, failure: @escaping () -> Void) {
 
 		// 检查网络
 		Network.manager.checkReachable { (reachable) in
@@ -130,33 +130,33 @@ class Network: NSObject {
 
 			let serializer = AFHTTPRequestSerializer()
 			do {
-				let request = try serializer.multipartFormRequestWithMethod("PUT", URLString: URL, parameters: parameters, constructingBodyWithBlock: { (formData) -> Void in
+				let request = try serializer.multipartFormRequest(withMethod: "PUT", urlString: URL, parameters: parameters, constructingBodyWith: { (formData) -> Void in
 					if data != nil {
-						formData.appendPartWithFileData(data!, name: "big_image", fileName: "image.jpeg", mimeType: "image/jpeg")
+						formData?.appendPart(withFileData: data!, name: "big_image", fileName: "image.jpeg", mimeType: "image/jpeg")
 					}
 					}, error: ())
 
-				let manager = AFURLSessionManager(sessionConfiguration: NSURLSessionConfiguration.defaultSessionConfiguration())
-				var progress: NSProgress?
+				let manager = AFURLSessionManager(sessionConfiguration: URLSessionConfiguration.default)
+				var progress: Progress?
 
-				let uploadTask = manager.uploadTaskWithStreamedRequest(request, progress: &progress) { (response, responseObject, error) -> Void in
+				let uploadTask = manager?.uploadTask(withStreamedRequest: request as URLRequest!, progress: &progress) { (response, responseObject, error) -> Void in
 
 					if error != nil {
 						failure()
-					} else if response.isKindOfClass(NSHTTPURLResponse.self) {
-						let statusCode = (response as! NSHTTPURLResponse).statusCode
+					} else if (response?.isKind(of: HTTPURLResponse.self))! {
+						let statusCode = (response as! HTTPURLResponse).statusCode
 						if statusCode >= 200 && statusCode < 300 {
 							var json = JSON(responseObject)
-							success(json.dictionaryObject!)
+							success(json.dictionaryObject! as Dictionary<String, AnyObject>)
 						} else {
 						}
 					} else {
 						var json = JSON(responseObject)
-						success(json.dictionaryObject!)
+						success(json.dictionaryObject! as Dictionary<String, AnyObject>)
 					}
 				}
 				
-				uploadTask.resume()
+				uploadTask?.resume()
 				
 			} catch {
 				// error occured
