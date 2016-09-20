@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import KEYExtension
 
 private let coverColor = UIColor(white: 1.0, alpha: 0.8)
 private let embedColor = UIColor.clear
@@ -100,7 +101,7 @@ extension PromptView {
 extension PromptView {
 
 	class func promptView() -> PromptView {
-		return BUNDLE_MAIN.loadNibNamed("PromptView", owner: nil, options: nil)!.first as! PromptView
+		return MainBundle.loadNibNamed("PromptView", owner: nil, options: nil)!.first as! PromptView
 	}
 
 	fileprivate class func isShowing() -> Bool {

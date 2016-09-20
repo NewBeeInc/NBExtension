@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import KEYExtension
 
 @objc public enum NBQRCodeScanViewControllerStyle: Int {
 	case fullScreen, custom

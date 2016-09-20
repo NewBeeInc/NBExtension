@@ -13,6 +13,7 @@
  */
 
 import UIKit
+import KEYExtension
 
 @objc public enum LayoutType: Int {
 	case normal

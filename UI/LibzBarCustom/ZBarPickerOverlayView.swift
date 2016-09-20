@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import KEYExtension
 
 class ZBarPickerOverlayView: UIView {
 
