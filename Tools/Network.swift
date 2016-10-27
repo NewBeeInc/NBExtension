@@ -8,7 +8,7 @@
 
 import UIKit
 import KEYExtension
-
+import SwiftyJSON
 class Network: NSObject {
 
 	/// 单例对象
